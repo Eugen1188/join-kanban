@@ -279,6 +279,7 @@ async function logInAsGuest() {
   };
   logedInUser.push(guestArray);
   await setItem("logedInUser", logedInUser);
+  window.location.href = BASE_URL + "summary.html";
 }
 
 

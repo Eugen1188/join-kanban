@@ -1,12 +1,18 @@
 .form-container {
   display: flex;
   flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .add-task-form {
   display: flex;
-  flex-direction: row;
-  max-width: 1208px;
+  flex-direction: column;
+  width: 100%;
+  gap: 24px;
+  padding: 32px;
+  padding-bottom: 120px;
 }
 
 .form-body {
@@ -16,38 +22,26 @@
 }
 
 .add-task-container {
-  display: flex;
-  position: fixed;
-  inset: 336px 328px;
-  width: 1208px;
+  display: none;
 }
 
 .addtask-side-left {
   display: flex;
-  position: absolute;
-  left: 328px;
-  top: 327px;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  width: 440px;
-  height: 376px;
+  width: 100%;
+  max-width: 440px;
 }
 
 .addtask-side-right {
   display: flex;
-  position: absolute;
-  top: 327px;
-  left: 864.25px;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  width: 440px;
-  height: 376px;
+  width: 100%;
+  max-width: 440px;
 }
 
 .input-addtask {
-  width: 398px;
+  width: 100%;
+  max-width: 398px;
   height: 24px;
   padding-block: 0;
   padding-inline: 0;
@@ -57,6 +51,7 @@
   border-radius: 10px;
   background-color: white;
   padding: 11px 21px;
+  box-sizing: border-box;
 }
 
 .input-container {
@@ -70,12 +65,9 @@
 }
 
 .divider {
-  position: absolute;
-  left: 816.25px;
-  top: 327px;
   width: 1px;
   background-color: #d1d1d1;
-  height: 424px;
+  margin: 0 12px;
 }
 
 .input-addtask-datepicker {

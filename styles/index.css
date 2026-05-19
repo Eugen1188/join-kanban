@@ -2,7 +2,7 @@
     width: 100px;
     height: 120px;
     object-fit: contain;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     z-index: 999;
@@ -54,8 +54,12 @@
 
   .login-top-cont {
     display: flex;
-    justify-content: end;
-    padding: 80px;
+    justify-content: flex-end;
+    padding: 24px 32px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
   }
 
   .login-top-cont img {
@@ -98,6 +102,8 @@
     height: 100vh;
     flex-direction: column;
     background-color: var(--background-color-site);
+    justify-content: center;
+    align-items: center;
   }
 
   .login-rights-cont {

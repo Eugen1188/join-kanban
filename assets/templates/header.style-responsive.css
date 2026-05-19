@@ -1,17 +1,18 @@
 @media(max-width:1023px) {
 
     .main-header {
-        position: absolute;
+        position: fixed;
         bottom: 0px;
         left: 0px;
         right: 0px;
-        height: 80px;
+        height: 96px;
         width: unset;
         justify-content: unset;
         flex-direction: unset;
         justify-content: unset;
         align-items: unset;
-        z-index: 2;
+        z-index: 1000;
+        border-top: 1px solid #d1d1d1;
     }
 
     .logo-cont {

@@ -11,10 +11,9 @@
 .task-headline {
   display: flex;
   align-items: center;
-  position: absolute;
-  left: 328px;
-  top: 206px;
+  margin-bottom: 32px;
   max-width: 1208px;
+  margin-left: 0;
 }
 
 .addtask-btn,
@@ -176,12 +175,13 @@
 
 .button-container {
   width: 100%;
-  position: absolute;
-  bottom: -230px;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
+  margin-top: 32px;
+  padding: 24px 0;
+  border-top: 1px solid #d1d1d1;
 }
 
 .btn-bg {
