@@ -303,3 +303,17 @@
 .clear-btn-2 {
   display: none;
 }
+
+.input-addtask-datepicker {
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.due-date-icon {
+  pointer-events: none;
+  z-index: 2;
+}

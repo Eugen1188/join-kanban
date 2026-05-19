@@ -6,16 +6,23 @@
 }
 
 @media (max-width: 668px) {
+  body {
+    overflow-x: hidden;
+  }
+
   .login-main-cont {
     justify-content: flex-start;
+    align-items: center;
     min-height: 100dvh;
     height: auto;
-    padding: 32px 16px calc(32px + env(safe-area-inset-bottom));
+    padding: 24px 16px calc(24px + env(safe-area-inset-bottom));
+    overflow-x: hidden;
     overflow-y: auto;
   }
 
   .login-top-cont {
     justify-content: center !important;
+    align-items: center;
     padding: 0 !important;
     order: 2;
     width: 100%;
@@ -23,17 +30,28 @@
 
   .login-cont {
     order: 1;
-    width: min(396px, calc(100vw - 32px)) !important;
-    min-height: 515px !important;
+    width: min(360px, calc(100vw - 32px)) !important;
+    min-height: 430px !important;
     height: auto !important;
-    justify-content: space-evenly;
+    border-radius: 30px;
+    padding: 24px 0;
+    justify-content: flex-start;
+    gap: 8px;
   }
 
   .login-rights-cont {
-    position: static;
-    bottom: auto;
+    position: static !important;
+    transform: none !important;
     margin-top: 24px;
+    width: 235px;
+    height: 30px;
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .login-headline {
+    height: auto !important;
+    margin: 0 0 24px !important;
+    gap: 20px;
   }
 
   .login-headline span {
@@ -49,16 +67,10 @@
   }
 
   .signup-cont {
-    margin-top: 48px;
+    margin-top: 32px;
     flex-wrap: wrap;
     gap: 16px;
     justify-content: center;
-  }
-
-  .login-headline {
-    height: 73px !important;
-    margin-bottom: 0;
-    margin-top: 0;
   }
 
   .login-buttons-cont {
@@ -68,7 +80,8 @@
     min-height: 123px !important;
     height: auto !important;
     justify-content: space-around !important;
-    align-items: unset !important;
+    align-items: center !important;
+    gap: 12px;
   }
 
   .loginbutton {
@@ -111,9 +124,11 @@
   }
 
   .input-field {
-    width: calc(100% - 32px) !important;
+    width: calc(100% - 48px) !important;
+    max-width: 300px;
     height: 48px !important;
-    background-position-x: calc(100% - 34px) !important;
+    margin-bottom: 16px;
+    background-position-x: calc(100% - 24px) !important;
   }
 
   .reg-headline-with-back-btn span {
@@ -132,7 +147,7 @@
 
   .checkbox-cont {
     width: unset;
-    margin-left: 0;
+    margin: 0 0 20px 24px !important;
   }
 
   .line {
@@ -152,7 +167,7 @@
   }
 
   .login-headline {
-    height: 60px;
+    height: auto;
   }
 
   .login-headline span {
@@ -172,20 +187,17 @@
   }
 }
 
-@media (max-height: 670px) {
+@media (max-height: 760px) and (max-width: 668px) {
   .login-main-cont {
-    padding-top: 20px;
-    justify-content: flex-start;
-    overflow-y: auto;
+    padding-top: 16px;
   }
 
   .login-rights-cont {
-    position: static;
-    bottom: auto !important;
+    margin-top: 16px !important;
   }
 
   .login-headline span {
-    font-size: 37px;
+    font-size: 40px;
   }
 
   .loginemail,
@@ -194,12 +206,12 @@
   }
 
   .login-cont {
-    min-height: 390px !important;
-    height: auto !important;
+    min-height: 395px !important;
+    padding: 18px 0;
   }
 
   .login-top-cont {
-    padding: 10px 0 40px 0;
+    padding: 10px 0 24px 0;
   }
 
   .signup-button {
@@ -212,7 +224,7 @@
   }
 
   .signup-cont {
-    margin-top: 30px;
+    margin-top: 20px;
   }
 
   .checkbox-cont {
