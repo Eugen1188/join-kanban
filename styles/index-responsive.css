@@ -1,228 +1,230 @@
-#inputRequired, #inputRequiredLogIn{
+#inputRequired,
+#inputRequiredLogIn {
   align-self: flex-start;
-  padding: 0px 0px 8px 8px;
-  color: 	#ff2f47;
+  padding: 0 0 8px 8px;
+  color: #ff2f47;
 }
 
-@media(max-width:668px) {
-
-    .login-main-cont {
-        justify-content: center;
-      }
-  
-      .login-top-cont {
-          justify-content: center !important;
-          padding: 0px !important;
-          order: 2;
-      }
-  
-      .login-cont{
-          order: 1;
-          width: 396px !important;
-          height: 515px !important;
-          justify-content: space-evenly;
-      }
-  
-      
-      .login-rights-cont {
-          bottom: 22px;
-      }
-  
-      .login-headline span {
-          font-size: 47px !important;
-      }
-  
-      .line {
-          width: 88px !important;
-      }
-
-      .signup-cont span {
-        font-size: 16px !important;
-      }
-
-      .signup-cont {
-        margin-top: 60px;
-      }
-  
-      .login-headline {
-          height: 73px !important;
-          margin-bottom: 0;
-          margin-top: 0;
-      }
-  
-      .login-buttons-cont {
-          flex-direction: column;
-          margin-bottom: 0px;
-          width: 180px !important;
-          height: 123px !important;
-          justify-content: space-around !important;
-          align-items: unset !important;
-      }
-      
-      .loginbutton {
-          width: 180px !important;
-          height: 51px !important;
-          margin-right: 0px;
-      }
-  
-      .loginguestbutton {
-          width: 180px;
-          height: 51px !important;
-          margin-left: 0px !important;
-      }
-  
-      .animation-img {
-          width: 100px;
-          height: 121px;
-      }
-  
-      @keyframes move-logo {
-          from {
-            top: 50%;
-            left: 50%;
-            width: 100px;
-            height: 121px;
-          }
-        
-          to {
-            top: 60px;
-            left: 60px;
-            width: 64px;
-            height: 78px;
-          }
-        }
-  
-        .reg-cont {
-          width: 396px;
-          height: 595px;
-        }
-  
-        .input-field {
-          width: 364px !important;
-          height: 48px !important;
-          background-position-x: 330px !important;
-        }
-  
-        .reg-headline-with-back-btn span {
-          font-size: 47px;
-        }
-  
-        .reg-headline {
-          margin-bottom: 0;
-          margin-top: 0;
-          justify-content: space-evenly;
-        }
-  
-        .form-cont {
-          display: contents;
-        }
-        
-        .checkbox-cont {
-          width: unset; 
-          margin-left: 0;
-        }
-
-        .reg-cont {
-            width: 396px !important;
-            height: 595px !important;
-        }
-
-        .line {
-            margin-top: 8px;
-        }
-  
+@media (max-width: 668px) {
+  .login-main-cont {
+    justify-content: flex-start;
+    min-height: 100dvh;
+    height: auto;
+    padding: 32px 16px calc(32px + env(safe-area-inset-bottom));
+    overflow-y: auto;
   }
 
-  @media(max-width:427px) {
-
-
-    .login-cont {
-        width: 280px !important;
-    }
-
-    .input-field {
-        width: 230px !important;
-        height: 40px !important;
-        background-position-x: 195px !important
-    }
-
-    .login-headline {
-        height: 60px
-    }
-
-    .login-headline span {
-        font-size: 37px !important;
-    }
-
-    .checkbox-cont {
-        margin: 0 0 15px 39px !important;
-    }
-
-    .reg-cont {
-        width: 280px !important;
-    }
-
-    .reg-headline-with-back-btn span {
-        font-size: 37px;
-    }
-
+  .login-top-cont {
+    justify-content: center !important;
+    padding: 0 !important;
+    order: 2;
+    width: 100%;
   }
 
-  @media(max-height:670px) {
-
-
-    .login-main-cont{
-      padding-top: 20px;
-  
-    }
-  
-    .login-rights-cont {
-      bottom: 0px !important;
-    }
-  
-    .login-headline span {
-      font-size: 37px;
-    }
-  
-    .loginemail {
-      height: 40px;
-    }
-  
-    .loginpassword {
-      height: 40px;
-    }
-  
-    .login-cont {
-      height: 390px !important;
-    }
-  
-    .login-top-cont {
-      padding: 10px 0px 138px 0px;
-    }
-  
-    .signup-button {
-      width: 80px;
-      height: 40px;
-    }
-  
-    .signup-cont span {
-      font-size: 16px;
-    }
-
-    .signup-cont {
-        margin-top: 30px;
-      }
-  
-    .checkbox-cont {
-      margin-bottom: 0;
-    }
-
-    .reg-cont {
-        height: 480px !important;
-    }
-
-    .reg-headline {
-        margin: 63px 0 24px !important;
-    }
-  
+  .login-cont {
+    order: 1;
+    width: min(396px, calc(100vw - 32px)) !important;
+    min-height: 515px !important;
+    height: auto !important;
+    justify-content: space-evenly;
   }
+
+  .login-rights-cont {
+    position: static;
+    bottom: auto;
+    margin-top: 24px;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .login-headline span {
+    font-size: 47px !important;
+  }
+
+  .line {
+    width: 88px !important;
+  }
+
+  .signup-cont span {
+    font-size: 16px !important;
+  }
+
+  .signup-cont {
+    margin-top: 48px;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+  }
+
+  .login-headline {
+    height: 73px !important;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+
+  .login-buttons-cont {
+    flex-direction: column;
+    margin-bottom: 0;
+    width: 180px !important;
+    min-height: 123px !important;
+    height: auto !important;
+    justify-content: space-around !important;
+    align-items: unset !important;
+  }
+
+  .loginbutton {
+    width: 180px !important;
+    height: 51px !important;
+    margin-right: 0;
+  }
+
+  .loginguestbutton {
+    width: 180px;
+    height: 51px !important;
+    margin-left: 0 !important;
+  }
+
+  .animation-img {
+    width: 100px;
+    height: 121px;
+  }
+
+  @keyframes move-logo {
+    from {
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 121px;
+    }
+
+    to {
+      top: 40px;
+      left: 32px;
+      width: 64px;
+      height: 78px;
+    }
+  }
+
+  .reg-cont {
+    width: min(396px, calc(100vw - 32px)) !important;
+    min-height: 595px !important;
+    height: auto !important;
+  }
+
+  .input-field {
+    width: calc(100% - 32px) !important;
+    height: 48px !important;
+    background-position-x: calc(100% - 34px) !important;
+  }
+
+  .reg-headline-with-back-btn span {
+    font-size: 47px;
+  }
+
+  .reg-headline {
+    margin-bottom: 0;
+    margin-top: 0;
+    justify-content: space-evenly;
+  }
+
+  .form-cont {
+    display: contents;
+  }
+
+  .checkbox-cont {
+    width: unset;
+    margin-left: 0;
+  }
+
+  .line {
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 427px) {
+  .login-cont {
+    width: calc(100vw - 32px) !important;
+  }
+
+  .input-field {
+    width: calc(100% - 50px) !important;
+    height: 48px !important;
+    background-position-x: calc(100% - 34px) !important;
+  }
+
+  .login-headline {
+    height: 60px;
+  }
+
+  .login-headline span {
+    font-size: 37px !important;
+  }
+
+  .checkbox-cont {
+    margin: 0 0 15px 0 !important;
+  }
+
+  .reg-cont {
+    width: calc(100vw - 32px) !important;
+  }
+
+  .reg-headline-with-back-btn span {
+    font-size: 37px;
+  }
+}
+
+@media (max-height: 670px) {
+  .login-main-cont {
+    padding-top: 20px;
+    justify-content: flex-start;
+    overflow-y: auto;
+  }
+
+  .login-rights-cont {
+    position: static;
+    bottom: auto !important;
+  }
+
+  .login-headline span {
+    font-size: 37px;
+  }
+
+  .loginemail,
+  .loginpassword {
+    height: 40px;
+  }
+
+  .login-cont {
+    min-height: 390px !important;
+    height: auto !important;
+  }
+
+  .login-top-cont {
+    padding: 10px 0 40px 0;
+  }
+
+  .signup-button {
+    width: 80px;
+    height: 40px;
+  }
+
+  .signup-cont span {
+    font-size: 16px;
+  }
+
+  .signup-cont {
+    margin-top: 30px;
+  }
+
+  .checkbox-cont {
+    margin-bottom: 0;
+  }
+
+  .reg-cont {
+    min-height: 480px !important;
+    height: auto !important;
+  }
+
+  .reg-headline {
+    margin: 32px 0 24px !important;
+  }
+}

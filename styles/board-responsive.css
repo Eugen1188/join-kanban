@@ -1,393 +1,363 @@
 .board-top-add {
-    background: var(--button-color);
-    height: 40px;
-    width: 40px;
-    border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    display: none;
+  background: var(--button-color);
+  height: 40px;
+  width: 40px;
+  border-radius: 10px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }
 
 .board-top-add:hover {
-    background: var(--light-blue);
+  background: var(--light-blue);
 }
 
 .board-top-cont-left {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.board-top-cont-left h2{
-    font-size: 47px;
+.board-top-cont-left h2 {
+  font-size: 47px;
 }
 
-.change-state-card{
+.change-state-card {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--button-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+}
+
+.change-state-card:hover {
+  background-color: var(--light-blue);
+}
+
+.drop-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+  position: absolute;
+  top: 56.5px;
+  right: 16px;
+  left: auto;
+  border-radius: 16px 0 16px 16px;
+  min-height: 140px;
+  width: 186px;
+  background-color: var(--button-color);
+  color: white;
+  padding: 16px;
+  z-index: 1000;
+}
+
+.drop-menu-option {
+  cursor: pointer;
+  padding: 0 12px;
+  width: fit-content;
+  border-radius: 8px;
+}
+
+.drop-menu-disabled {
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+.drop-menu-option:hover {
+  background-color: var(--light-blue);
+}
+
+.input-container-contacts {
+  width: calc(100% - 42px);
+  align-self: flex-start;
+}
+
+.arrow {
+  left: auto;
+  right: 16px;
+}
+
+@media (max-width: 1430px) {
+  .board-main {
+    flex-direction: column;
+  }
+
+  .divider {
+    display: block !important;
+  }
+
+  .task-headline {
+    justify-content: flex-start !important;
+  }
+
+  .task-overlay-translate-in-task {
+    translate: calc(-100vw - 50%);
+  }
+
+  .required-info {
+    display: flex !important;
+  }
+
+  .board-card-section {
+    height: min-content;
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  #todo,
+  #in-progress,
+  #await-feedback,
+  #done {
+    flex-direction: row;
+    width: 90%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: min-content;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #todo::-webkit-scrollbar,
+  #in-progress::-webkit-scrollbar,
+  #await-feedback::-webkit-scrollbar,
+  #done::-webkit-scrollbar {
     display: none;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--button-color);
-    width: 40px;
-    height: 40px;
-    border-radius: 50% 50%;
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    cursor: pointer;
+  }
+
+  .board-title-content {
+    position: relative;
+  }
 }
 
-.change-state-card:hover{
-    background-color: var(--light-blue);
-}
-
-.drop-menu{
+@media (max-width: 1300px) {
+  .button-container {
+    width: 100%;
+    position: sticky;
+    bottom: 0;
     display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+    background-color: white;
+    z-index: 1000;
+  }
+
+  .edit-datepicker {
+    left: auto;
+    right: 16px;
+  }
+
+  .input-addtask {
+    width: 100%;
+  }
+
+  #subtask {
+    width: 100%;
+  }
+
+  #title {
+    width: calc(100% - 42px);
+  }
+
+  .input-container {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1150px) {
+  .board-top-cont-left {
+    margin-bottom: 40px;
+  }
+
+  .add-task-overlay {
+    width: calc(100% - 32px);
+  }
+
+  .board-add-button {
+    text-wrap: nowrap;
+  }
+
+  .board-top-content {
     flex-direction: column;
     gap: 8px;
-    box-sizing: border-box;
-    position: absolute;
-    top: 56.5px;
-    left: 32px;
-    border-radius: 16px 0px 16px 16px;
-    height: 140px;
-    width: 186px;
-    background-color: var(--button-color);
-    color: white;
-    padding: 16px;
+  }
+
+  #todo,
+  #in-progress,
+  #await-feedback,
+  #done {
+    width: 100%;
+  }
 }
 
-.drop-menu-option{
-    cursor: pointer;
-    padding: 0px 12px;
-    width: fit-content;
-    border-radius: 8px;
+@media (max-width: 1023px) {
+  .board-top-add {
+    display: flex;
+  }
+
+  .board-add-button {
+    display: none;
+  }
+
+  .board-card {
+    position: relative;
+  }
+
+  .change-state-card {
+    display: flex;
+  }
+
+  main {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100dvh - 160px);
+    height: auto;
+    position: relative;
+    overflow-y: auto;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling: touch;
+  }
+
+  main::-webkit-scrollbar {
+    display: none;
+  }
+
+  .main-header {
+    width: 100%;
+  }
+
+  .board-main {
+    position: static;
+    inset: auto;
+    width: 100%;
+    padding: 0 16px;
+    height: auto;
+    overflow-y: visible;
+  }
+
+  .board-top {
+    width: 100%;
+    padding: 0 16px;
+    position: static;
+  }
+
+  .board-top-content {
+    padding: 0;
+  }
+
+  .board-top-form,
+  .board-top-cont-right,
+  #board-search-task {
+    width: 100%;
+  }
+
+  .board-top-cont-right {
+    padding-right: 0;
+  }
+
+  .board-search-form {
+    width: 100%;
+    max-width: none;
+    margin-right: 0;
+  }
+
+  .board-title-content {
+    width: 100%;
+  }
+
+  .task-overlay-content {
+    width: calc(100% - 32px);
+    max-width: 525px;
+    max-height: calc(100dvh - 80px);
+    overflow-y: auto;
+  }
+
+  .task-overlay-translate-in {
+    translate: calc(-100vw - 50%);
+  }
 }
 
-.drop-menu-disabled{
-    pointer-events: none;
-    opacity: 0.4;
-}
-
-.drop-menu-option:hover{
-    background-color: var(--light-blue);
-}
-
-.input-container-contacts{
-    width: calc(100% - 42px);
-    align-self: flex-start;
-}
-
-.arrow{
-    left: 100%;
-}
-
-@media(max-width: 1430px) {
-    .board-main {
-        flex-direction: column;
-    }
-
-    .divider {
-        display: block !important;
-    }
-
-    .task-headline {
-        justify-content: flex-start !important;
-    }
-
-    .task-overlay-translate-in-task {
-        translate: calc(-100vw - 50%);
-    }
-
-    .required-info {
-        display: flex !important;
-    }
-
-    .board-card-section {
-        height: min-content;
-        width: 100%;
-        align-items: flex-start;
-    }
-
-    #todo,
-    #in-progress,
-    #await-feedback,
-    #done {
-        flex-direction: row;
-        height: 256px;
-        width: 90%;
-        overflow-x: scroll;
-        overflow-y: hidden;
-        height: min-content;
-    }
-
-    #todo::-webkit-scrollbar,
-    #in-progress::-webkit-scrollbar,
-    #await-feedback::-webkit-scrollbar,
-    #done::-webkit-scrollbar {
-        display: none;
-    }
-
-    .board-title-content {
-        position: relative;
-    }
-}
-
-@media (max-width: 1300px){
-    .button-container{
-        width: 100%;
-        position: absolute;
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        gap: 16px;
-        background-color: white;
-    }
-
-    .edit-datepicker {
-        left: calc(100% - 32px);
-        right: 0;
-    }
-
-    .input-addtask {
-        width: 100%;
-    }
-
-    #subtask{
-        width: calc(100%);
-    }
-
-    #title{
-        width: calc(100% - 42px);
-    }
-
-    .input-container {
-        width: 100%;
-    }
-    
-    
-}
-
-
-
-@media(max-width: 1150px) {
-    .addtask-side-left {
-        left: 32px;
-    }
-
-    .board-top-cont-left{
-        margin-bottom: 40px;
-    }
-
-    .divider {
-        left: 532px;
-    }
-
-    .addtask-side-right {
-        left: 596px;
-    }
-
-
-    .add-task-overlay {
-        width: calc(100% - 32px);
-    }
-
-    .board-add-button {
-        text-wrap: nowrap;
-    }
-
-    .board-top-content {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    #todo,
-    #in-progress,
-    #await-feedback,
-    #done {
-        width: 100%;
-    }
-}
-
-@media (max-width:1100px){
-
-
-    .addtask-side-left {
-        left: 20px!important;
-    }
-
-    .divider {
-        left: 494px!important;
-    }
-
-    .addtask-side-right {
-        left: 530px!important;
-    }
-}
-
-@media (max-width:1023px) {
-    .board-top-add {
-        display: flex;
-    }
-
-    .board-add-button {
-        display: none;
-    }
-
-    .board-card{
-        position: relative;
-    }
-
-    .change-state-card{
-        display: flex;
-    }
-
-    main {
-        display: flex;
-        flex-direction: column;
-        height: calc(100% - 160px);
-        position: relative;
-        overflow-y: scroll;
-    }
-
-    main::-webkit-scrollbar{
-        display: none;
-    }
-
-    .main-header {
-        width: -webkit-fill-available;
-    }
-
-    .board-main {
-        inset: 280px 0px;
-        width: calc(100% - 32px);
-        padding: 0px 16px;
-        height: calc(100% - 370px);
-        overflow-y: unset;
-        position: unset;
-    }
-
-    .board-top {
-        width: calc(100% - 32px);
-        padding: 0px 16px;
-        position: unset;
-    }
-
-    .board-top-content {
-        padding: 0px;
-    }
-
-    .board-add-button {
-        display: none;
-    }
-
-    .board-top-form,
-    .board-top-cont-right,
-    #board-search-task {
-        width: 100%;
-    }
-
-    .board-top-cont-right {
-        padding-right: 0;
-    }
-
-    .board-search-form {
-        width: 100%;
-        max-width: 303px;
-        margin-right: 32px;
-    }
-
-    .board-title-content {
-        width: 100%;
-
-    }
-
-    .task-overlay-content {
-        width: calc(100% - 112px);
-        max-width: calc(525px - 80px);
-        max-height: 75%;
-    }
-
-    .task-overlay-translate-in {
-        translate: calc(-100vw - 50%);
-    }
-    
-}
-
-@media (max-width:550px) {
-    .task-overlay-content {
-        overflow-y: scroll;
-        gap: 16px;
-    }
-
-    .task-overlay-content::-webkit-scrollbar {
-        display: none;
-    }
-
-    .task-overlay-title {
-        font-size: 32px !important;
-    }
-
-    .task-overlay-content span {
-        font-size: 16px;
-    }
-
-    .scrollbar {
-        width: 110%;
-        min-width: 300px;
-    }
-
-    .task-overlay-edit-content,
-    .input-container-edit,
-    .input-addtask-edit,
-    .input-addtask-date-modified,
-    .input-subtask {
-        width: calc(100% - 22px) !important;
-    }
-
-    textarea {
-        width: calc(100% + 20px) !important;
-    }
-
-    .contact-values,
-    .input-container {
-        width: 100%;
-    }
-
-    .radio-button,
-    .prio-container,
-    label {
-        padding: 0 !important;
-        font-size: 16px !important;
-        font-weight: 400 !important;
-    }
-
-    label.radio-button {
-        width: 30%;
-    }
-
-    .prio-container {
-        min-width: 268px;
-        width: 108%;
-    }
-
-    .subtask-list-container ul {
-        padding-left: 24px;
-    }
-
-    .subtask-list-container li {
-        width: 70%;
-        padding: 6px 8px;
-    }
-
-    #searchInfo {
-        margin-left: -142px;
-    }
+@media (max-width: 550px) {
+  .task-overlay-content {
+    overflow-y: auto;
+    gap: 16px;
+  }
+
+  .task-overlay-content::-webkit-scrollbar {
+    display: none;
+  }
+
+  .task-overlay-title {
+    font-size: 32px !important;
+  }
+
+  .task-overlay-content span {
+    font-size: 16px;
+  }
+
+  .scrollbar {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .task-overlay-edit-content,
+  .input-container-edit,
+  .input-addtask-edit,
+  .input-addtask-date-modified,
+  .input-subtask {
+    width: 100% !important;
+  }
+
+  textarea {
+    width: 100% !important;
+  }
+
+  .contact-values,
+  .input-container {
+    width: 100%;
+  }
+
+  .radio-button,
+  .prio-container,
+  label {
+    padding: 0 !important;
+    font-size: 16px !important;
+    font-weight: 400 !important;
+  }
+
+  label.radio-button {
+    width: 30%;
+  }
+
+  .prio-container {
+    min-width: 0;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .subtask-list-container ul {
+    padding-left: 24px;
+  }
+
+  .subtask-list-container li {
+    width: 100%;
+    padding: 6px 8px;
+  }
+
+  #searchInfo {
+    margin-left: 0;
+  }
 }
 
 @media (max-width: 320px) {
-    .scrollbar {
-        margin-left: -30px;
-    }
+  .scrollbar {
+    margin-left: 0;
+  }
 }

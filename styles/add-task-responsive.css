@@ -3,25 +3,21 @@
     display: none;
   }
 
-  .form-container {
-    display: flex;
-    inset: 336px 328px;
-    flex-direction: column;
-    height: calc(100% - 300px);
-  }
-
   .submit-btn-mobile {
     display: flex;
     gap: 16px;
+    padding-right: 16px;
   }
 
   .button-container {
-    position: fixed;
-    top: calc(100% - 110px);
+    position: sticky;
+    bottom: 0;
     background-color: #f6f7f8;
-    height: 88px;
+    min-height: 88px;
     justify-content: space-between;
-    width: calc(100% - 380px);
+    width: 100%;
+    z-index: 1000;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .edit-subtask-field input {
@@ -33,18 +29,14 @@
     display: unset;
   }
 
-  .submit-btn-mobile {
-    padding-right: 16px;
-  }
-
   .input-addtask-datepicker {
-    left: calc(100% - 16px);
-    right: 0;
+    left: auto;
+    right: 16px;
   }
 
   .arrow {
-    left: calc(100% - 42px);
-    right: 0;
+    left: auto;
+    right: 16px;
   }
 
   .contact-values {
@@ -60,6 +52,7 @@
   .input-addtask-date-modified {
     width: calc(100% - 42px);
   }
+
   .input-container-contacts {
     width: calc(100% - 22px);
     z-index: 2000;
@@ -68,16 +61,13 @@
   .prio-container {
     min-width: 268px;
     width: 100%;
+    gap: 16px;
+    justify-content: space-between;
   }
 
   label.radio-button {
     width: 121px;
-    padding: 0px 8px;
-  }
-
-  .prio-container {
-    gap: 16px;
-    justify-content: space-between;
+    padding: 0 8px;
   }
 
   .edit-subtask-field li,
@@ -90,22 +80,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: fixed;
-    inset: 128px 328px;
-    padding: 0px 16px;
-    height: calc(100% - 300px);
+    position: static;
+    padding: 0 16px 120px;
+    height: auto;
     width: calc(100% - 380px);
-    overflow-y: scroll;
+    overflow-y: visible;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .task-headline {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    position: unset;
-    height: 112px;
+    position: static;
+    min-height: 112px;
     width: calc(100% - 32px);
-    padding: 0px 16px;
+    padding: 0 16px;
     margin-bottom: 32px;
   }
 
@@ -113,45 +104,33 @@
     display: flex;
     flex-direction: column;
     max-width: 1208px;
+    width: 100%;
   }
 
   .add-task-container {
     display: flex;
-    inset: 336px 328px;
+    position: static;
+  }
+
+  .addtask-side-left,
+  .addtask-side-right {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: auto;
+    gap: 8px;
+    flex: 0;
   }
 
   .addtask-side-left {
-    position: unset;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    height: auto;
-    gap: 8px;
-    flex: 0;
     margin-bottom: 8px;
   }
 
-  .addtask-side-right {
-    position: unset;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    height: auto;
-    gap: 8px;
-    flex: 0;
-  }
-
   .choosen-contacts {
-    position: unset;
-  }
-
-  .input-addtask-datepicker {
-    left: calc(100% - 34px);
-    right: 0;
+    position: static;
   }
 
   .divider,
@@ -167,17 +146,43 @@
 }
 
 @media only screen and (max-width: 1023px) {
-  .form-container::-webkit-scrollbar {
+  .form-container::-webkit-scrollbar,
+  main::-webkit-scrollbar {
     display: none;
+  }
+
+  main {
+    min-height: calc(100dvh - 160px);
+    overflow-y: auto;
+    padding-bottom: calc(110px + env(safe-area-inset-bottom));
+  }
+
+  .form-container {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    inset: auto;
+    padding: 0 16px 140px;
+    height: auto;
+    min-height: auto;
+    overflow-y: visible;
+    width: 100%;
   }
 
   .button-container {
     position: fixed;
-    top: calc(100% - 168px);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    min-height: 88px;
     background-color: #f6f7f8;
-    height: 88px;
     justify-content: space-between;
-    width: calc(100% - 22px);
+    z-index: 9999;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
   }
 
   .edit-subtask-field input {
@@ -185,17 +190,17 @@
   }
 
   .submit-btn-mobile {
-    padding-right: 16px;
+    padding-right: 0;
   }
 
   .input-addtask-datepicker {
-    left: calc(100% - 16px);
-    right: 0;
+    left: auto;
+    right: 16px;
   }
 
   .arrow {
-    left: calc(100% - 42px);
-    right: 0;
+    left: auto;
+    right: 16px;
   }
 
   .contact-values {
@@ -212,26 +217,26 @@
   .input-addtask-date-modified {
     width: calc(100% - 42px);
   }
+
   .input-container-contacts {
     width: calc(100% - 22px);
     z-index: 2000;
   }
 
   .prio-container {
-    min-width: 268px;
+    min-width: 0;
     width: 100%;
+    gap: 12px;
+    justify-content: space-between;
   }
 
   label.radio-button {
-    width: 121px !important;
+    flex: 1;
+    width: auto !important;
+    min-width: 0;
     font-size: 16px !important;
-    height: 41px !important;
-    padding: 0px 3px !important;
-  }
-
-  .prio-container {
-    gap: 16px;
-    justify-content: space-between;
+    height: 48px !important;
+    padding: 0 6px !important;
   }
 
   .edit-subtask-field li,
@@ -240,27 +245,15 @@
     width: 100%;
   }
 
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: fixed;
-    inset: 128px 0px;
-    padding: 0px 16px;
-    height: calc(100% - 300px);
-    overflow-y: scroll;
-    width: auto;
-  }
-
   .task-headline {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    position: unset;
-    height: 112px;
-    width: calc(100% - 32px);
-    padding: 0px 16px;
-    margin-bottom: 32px;
+    position: static;
+    min-height: 96px;
+    width: 100%;
+    padding: 0 16px;
+    margin-bottom: 16px;
   }
 
   .task-headline h1 {
@@ -271,45 +264,34 @@
     display: flex;
     flex-direction: column;
     max-width: 1208px;
+    width: 100%;
   }
 
   .add-task-container {
     display: flex;
-    inset: 336px 328px;
+    position: static;
+    inset: auto;
+  }
+
+  .addtask-side-left,
+  .addtask-side-right {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    height: auto;
+    gap: 8px;
+    flex: 0;
   }
 
   .addtask-side-left {
-    position: unset;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    height: auto;
-    gap: 8px;
-    flex: 0;
     margin-bottom: 8px;
   }
 
-  .addtask-side-right {
-    position: unset;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    height: auto;
-    gap: 8px;
-    flex: 0;
-  }
-
   .choosen-contacts {
-    position: unset;
-  }
-
-  .input-addtask-datepicker {
-    left: calc(100% - 34px);
-    right: 0;
+    position: static;
   }
 
   .divider,
@@ -326,34 +308,31 @@
 }
 
 @media only screen and (max-width: 360px) {
-  .form-container::-webkit-scrollbar {
-    display: none;
-  }
-
   .task-added {
     width: 252px;
-  }
-
-  label.radio-button {
-    padding: 0px 2px;
   }
 
   .prio-container {
     gap: 8px;
   }
+
+  label.radio-button {
+    font-size: 14px !important;
+    padding: 0 2px !important;
+  }
 }
 
 @media only screen and (max-width: 319px) {
-  .form-container::-webkit-scrollbar {
-    display: none;
-  }
-
   .prio-container {
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 16px;
-    padding: 0px 8px;
+    padding: 0 8px;
     min-width: 0;
+  }
+
+  label.radio-button {
+    width: 100% !important;
   }
 }

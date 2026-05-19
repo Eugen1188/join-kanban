@@ -1,3 +1,4 @@
+const BASE_URL = window.location.hostname === "localhost" ? "./" : "/join-kanban/";
 const STORAGE_TOKEN = "B0S7VW5J7TMVF1N3C8G1FX6TF8A9FYUYYTJ8W60E";
 const STORAGE_URL = "https://remote-storage.developerakademie.org/item";
 let allTasks = [];
@@ -242,19 +243,19 @@ function includeHTML() {
 }
 
 function navigateToBoard() {
-  window.location.href = "./board.html";
+  window.location.href = BASE_URL + "board.html";
 }
 
 function navigateToHelp() {
-  window.location.href = "./help.html";
+  window.location.href = BASE_URL + "help.html";
 }
 
 function navigateToAddTask() {
-  window.location.href = "./add-task.html";
+  window.location.href = BASE_URL + "add-task.html";
 }
 
 function navigateToIndex() {
-  window.location.href = "./index.html";
+  window.location.href = BASE_URL + "index.html";
 }
 
 /**
@@ -287,7 +288,7 @@ async function logInAsGuest() {
 async function logOut() {
   logedInUser = [];
   await setItem("logedInUser", logedInUser);
-  window.location = "index.html";
+  window.location = BASE_URL + "index.html";
 }
 
 /**
@@ -322,7 +323,7 @@ function changeLinkDirection() {
     let privacyPolicy = document.getElementById("privacyPolicyLink");
     let legalNotice = document.getElementById("legalNoticeLink");
 
-    privacyPolicy.href = "privacy-policy-unloged.html";
-    legalNotice.href = "legal-notice-unloged.html";
+    privacyPolicy.href = BASE_URL + "privacy-policy-unloged.html";
+    legalNotice.href = BASE_URL + "legal-notice-unloged.html";
   }, 100);
 }
