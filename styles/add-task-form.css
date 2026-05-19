@@ -21,10 +21,6 @@
   flex-direction: column;
 }
 
-.add-task-container {
-  display: none;
-}
-
 .addtask-side-left {
   display: flex;
   flex-direction: column;
@@ -76,10 +72,11 @@
   color: #a8a8a8;
   border: none;
   position: absolute;
-  top: 42px;
+  top: 50%;
   right: 16px;
   width: 24px;
   height: 24px;
+  transform: translateY(-50%);
 }
 
 .input-addtask-date-modified {

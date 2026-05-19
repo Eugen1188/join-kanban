@@ -27,8 +27,11 @@ body {
   background-color: var(--background-color-site);
   position: relative;
   overflow-x: hidden;
-  overflow-y: auto;
   -webkit-text-size-adjust: 100%;
+}
+
+body:has(.login-main-cont) {
+  overflow-y: hidden;
 }
 
 ::-webkit-scrollbar {
