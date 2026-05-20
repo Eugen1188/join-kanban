@@ -1,24 +1,23 @@
+.task-headline {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-basis: 100%;
+  margin: 0;
+  padding: 64px 0 24px 0;
+  position: relative;
+  z-index: 1;
+}
+
 .task-headline h1 {
   margin-block-start: 0;
   margin-block-end: 0;
   font-size: 61px;
+  line-height: 73px;
   font-weight: 700;
   display: flex;
   gap: 1px;
   justify-content: flex-start;
-}
-
-.task-headline {
-  display: flex;
-  align-items: center;
-  margin-bottom: 24px;
-  margin-top: 0;
-  max-width: 1208px;
-  margin-left: 0;
-  padding-top: 32px;
-  padding-bottom: 0;
-  position: relative;
-  z-index: 10;
 }
 
 .addtask-btn,
@@ -57,12 +56,6 @@
 
 .stroke-wht svg path {
   stroke: white;
-}
-
-.due-date-icon {
-  position: absolute;
-  top: 38px;
-  right: 12px;
 }
 
 .active {
@@ -119,6 +112,7 @@
 .add-subtask {
   display: flex;
   position: relative;
+  width: 100%;
 }
 
 .svg-container {
@@ -133,7 +127,14 @@
 
 .svg-plusicon {
   right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   position: absolute;
+}
+
+.svg-plusicon:hover {
+  border-radius: 50%;
+  background-color: #eeeeee;
 }
 
 .icon-section {
@@ -143,6 +144,8 @@
   align-items: center;
   gap: 4px;
   right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .divider-2 {
@@ -151,17 +154,14 @@
   background-color: #a8a8a8;
 }
 
-.svg-plusicon:hover {
-  border-radius: 50%;
-  background-color: #eeeeee;
-}
-
 .changed-input-icons {
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: absolute;
   right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   gap: 8px;
 }
 
@@ -184,9 +184,9 @@
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
-  margin-top: 32px;
-  padding: 24px 0;
-  border-top: 1px solid #d1d1d1;
+  margin-top: auto;
+  padding: 0;
+  border-top: none;
 }
 
 .btn-bg {
@@ -307,18 +307,4 @@
 .required-info-mobile,
 .clear-btn-2 {
   display: none;
-}
-
-.input-addtask-datepicker {
-  opacity: 0;
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-}
-
-.due-date-icon {
-  pointer-events: none;
-  z-index: 2;
 }

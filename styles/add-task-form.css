@@ -1,18 +1,21 @@
-.form-container {
-  display: flex;
-  flex-direction: row;
-  gap: 24px;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-
 .add-task-form {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: calc(100% - 232px);
+  min-height: calc(100vh - 97px);
+  margin-left: 232px;
   gap: 24px;
-  padding: 32px;
-  padding-bottom: 120px;
+  padding: 0 32px 32px 68px;
+  box-sizing: border-box;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: row;
+  gap: 38px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  max-width: 980px;
 }
 
 .form-body {
@@ -33,21 +36,7 @@
   flex-direction: column;
   width: 100%;
   max-width: 440px;
-}
-
-.input-addtask {
-  width: 100%;
-  max-width: 398px;
-  height: 24px;
-  padding-block: 0;
-  padding-inline: 0;
-  color: black;
-  font-size: 18px;
-  border: 1px solid #d1d1d1;
-  border-radius: 10px;
-  background-color: white;
-  padding: 11px 21px;
-  box-sizing: border-box;
+  min-height: 530px;
 }
 
 .input-container {
@@ -60,25 +49,29 @@
   margin-bottom: 8px;
 }
 
-.divider {
-  width: 1px;
-  background-color: #d1d1d1;
-  margin: 0 12px;
+.input-addtask {
+  width: 100%;
+  height: 48px;
+  color: black;
+  font-size: 18px;
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  background-color: white;
+  padding: 11px 21px;
+  box-sizing: border-box;
 }
 
-.input-addtask-datepicker {
-  padding-block: 0;
-  padding-inline: 0;
+.input-addtask::placeholder,
+.input-addtask-date-modified::placeholder,
+textarea::placeholder {
   color: #a8a8a8;
-  border: none;
-  position: absolute;
-  top: 50%;
-  right: 16px;
-  width: 24px;
-  height: 24px;
-  transform: translateY(-50%);
-  opacity: 0;
-  cursor: pointer;
+}
+
+.divider {
+  width: 1px;
+  height: 388px;
+  background-color: #d1d1d1;
+  margin: 0 0;
 }
 
 .date-input-wrapper {
@@ -86,7 +79,31 @@
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 398px;
+}
+
+.input-addtask-date-modified {
+  width: 100%;
+  height: 48px;
+  color: black;
+  font-size: 18px;
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  background-color: white;
+  padding: 11px 56px 11px 21px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.input-addtask-datepicker {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 48px;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 4;
+  border: none;
+  padding: 0;
 }
 
 .date-picker-icon {
@@ -94,33 +111,18 @@
   right: 16px;
   top: 50%;
   transform: translateY(-50%);
-  pointer-events: auto;
-  cursor: pointer;
-  z-index: 5;
-}
-}
-
-.input-addtask-date-modified {
-  width: 100%;
-  max-width: 398px;
+  width: 24px;
   height: 24px;
-  padding-block: 0;
-  padding-inline: 0;
-  color: #a8a8a8;
-  font-size: 18px;
-  border: 1px solid #d1d1d1;
-  border-radius: 10px;
-  background-color: white;
-  padding: 11px 21px;
-  box-sizing: border-box;
-  position: relative;
+  pointer-events: none;
+  z-index: 5;
 }
 
 .prio-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  gap: 16px;
+  width: 100%;
 }
 
 .category-container {
@@ -144,14 +146,22 @@
 }
 
 .custom-select {
+  width: 100%;
+  height: 48px;
   background-image: url(https://join-63.developerakademie.net/assets/img/icons/arrow_drop_down.png);
   background-position: calc(100% - 23px) center;
-  cursor: pointer;
   background-repeat: no-repeat;
+  cursor: pointer;
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none;
   color: black;
+  font-size: 18px;
+  border: 1px solid #d1d1d1;
+  border-radius: 10px;
+  background-color: white;
+  padding: 12px 56px 12px 21px;
+  box-sizing: border-box;
 }
 
 .custom-select option {
@@ -169,4 +179,18 @@
   border-bottom: 1px solid #005dff;
   width: 424px;
   height: 32px;
+}
+
+textarea {
+  width: 100%;
+  border: 1px solid #d1d1d1;
+  color: black;
+  font-family: "Inter", sans-serif;
+  font-size: 18px;
+  resize: none;
+  border-radius: 10px;
+  background-color: white;
+  box-sizing: border-box;
+  padding: 21px 18px;
+  height: 120px;
 }

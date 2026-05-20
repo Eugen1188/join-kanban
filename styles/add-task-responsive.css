@@ -1,40 +1,23 @@
 @media only screen and (max-width: 1330px) {
-  main {
-    width: 100%;
-    min-height: calc(100dvh - 96px);
-    height: auto;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding-bottom: 120px;
-  }
-
-  .task-headline {
-    position: static !important;
-    left: auto !important;
-    top: auto !important;
-    width: 100%;
-    max-width: 1208px;
-    margin: 0 auto;
-    padding: 40px 32px 32px;
+  .add-task-form {
+    width: calc(100% - 232px);
+    margin-left: 232px;
+    padding: 0 32px 32px 68px;
   }
 
   .form-container {
-    position: static !important;
-    inset: auto !important;
     width: 100%;
-    max-width: 1208px;
-    height: auto;
-    margin: 0 auto;
-    padding: 0 32px 32px;
+    max-width: 980px;
+    margin: 0;
+    padding: 0;
     overflow: visible;
   }
 
-  .add-task-container {
-    position: static !important;
-    inset: auto !important;
-    display: flex;
+  .task-headline {
     width: 100%;
-    gap: 48px;
+    max-width: 980px;
+    margin: 0;
+    padding: 64px 0 24px;
   }
 
   .addtask-side-left,
@@ -50,7 +33,7 @@
     top: auto !important;
     bottom: auto !important;
     width: 100%;
-    margin-top: 32px;
+    margin-top: auto;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -62,6 +45,13 @@
   body {
     overflow-x: hidden;
     overflow-y: auto;
+  }
+
+  .add-task-form {
+    width: 100%;
+    margin-left: 0;
+    min-height: auto;
+    padding: 0 24px calc(210px + env(safe-area-inset-bottom));
   }
 
   main {
@@ -87,7 +77,7 @@
     max-width: none;
     min-height: auto;
     margin: 0;
-    padding: 32px 24px 24px;
+    padding: 32px 0 24px;
   }
 
   .task-headline h1 {
@@ -102,8 +92,9 @@
     max-width: none;
     height: auto;
     margin: 0;
-    padding: 0 24px 32px;
+    padding: 0 0 32px;
     overflow: visible;
+    gap: 8px;
   }
 
   .add-task-form {
@@ -123,7 +114,9 @@
   .addtask-side-right {
     position: static !important;
     width: 100% !important;
+    max-width: none;
     min-width: 0;
+    min-height: auto;
     height: auto;
     display: flex;
     flex-direction: column;
@@ -198,6 +191,10 @@
     background-color: white;
   }
 
+  .contact-value-wrapper {
+    width: 100%;
+  }
+
   .choosen-contacts {
     position: static !important;
     width: 100%;
@@ -224,31 +221,30 @@
 
   .input-addtask-datepicker {
     position: absolute;
-    left: auto !important;
-    right: 16px !important;
-    top: 38px !important;
-    width: 24px !important;
-    height: 24px !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 48px !important;
     opacity: 0;
     cursor: pointer;
   }
 
-  .due-date-icon {
+  .date-picker-icon {
     position: absolute;
     left: auto !important;
     right: 16px !important;
-    top: 38px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
     width: 24px;
     height: 24px;
     pointer-events: none;
-    z-index: 2;
+    z-index: 5;
   }
 
   .arrow {
     left: auto !important;
     right: 16px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
+    top: 39px !important;
+    transform: none !important;
   }
 }
 
@@ -257,12 +253,16 @@
     padding-bottom: calc(200px + env(safe-area-inset-bottom)) !important;
   }
 
+  .add-task-form {
+    padding: 0 16px calc(200px + env(safe-area-inset-bottom));
+  }
+
   .task-headline {
-    padding: 28px 16px 20px;
+    padding: 28px 0 20px;
   }
 
   .form-container {
-    padding: 0 16px 32px;
+    padding: 0 0 32px;
   }
 
   .button-container {

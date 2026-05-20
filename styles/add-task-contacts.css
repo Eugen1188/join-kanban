@@ -14,6 +14,47 @@
   width: 24px;
 }
 
+.input-container-contacts {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  gap: 8px;
+  width: 440px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.assigned-to {
+  padding-right: 56px;
+}
+
+.assigned-to::placeholder {
+  color: black;
+  font-size: 16px;
+}
+
+.arrow {
+  position: absolute;
+  right: 16px;
+  top: 39px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+.arrow:hover {
+  border-radius: 50%;
+  background-color: #eeeeee;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
 .contact-values {
   width: 440px;
   box-shadow: 0px 4px 4px 0px #0000001a;
@@ -26,6 +67,17 @@
   position: static;
   margin-top: -6px;
   gap: 2px;
+  background-color: white;
+  z-index: 20;
+}
+
+.contact-value-wrapper {
+  width: 440px;
+  display: flex;
+  background-color: white;
+  margin-top: -23px;
+  padding-top: 8px;
+  z-index: 999;
 }
 
 .contact-list-name-initials {
@@ -40,9 +92,22 @@
   gap: 4px;
 }
 
+.contact-list-name-container {
+  width: calc(100% - 32px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 16px;
+}
+
 .contact-list-name-container:hover {
   border-radius: 10px;
   background-color: rgba(0, 0, 0, 10%);
+}
+
+.contact-list-name-container:active {
+  color: var(--background-color-site);
+  background-color: var(--button-selected);
 }
 
 .initials-circle {
@@ -56,61 +121,6 @@
   border: 2px solid white;
 }
 
-.contact-list-name-container {
-  width: calc(100% - 32px);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 7px 16px;
-}
-
 .contact-list-checkbox-icon {
   display: flex;
-}
-
-.input-container-contacts {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.contact-list-name-container:active {
-  color: var(--background-color-site);
-  background-color: var(--button-selected);
-}
-
-.arrow {
-  top: 50%;
-  right: 16px;
-  cursor: pointer;
-  position: absolute;
-  transform: translateY(-50%);
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.arrow:hover {
-  border-radius: 50%;
-  background-color: #eeeeee;
-}
-
-.rotate-180 {
-  transform: rotate(180deg);
-}
-
-.assigned-to::placeholder {
-  color: black;
-  font-size: 16px;
-}
-
-.contact-value-wrapper {
-  width: 440px;
-  display: flex;
-  background-color: white;
-  margin-top: -23px;
-  padding-top: 8px;
-  z-index: 999;
 }
