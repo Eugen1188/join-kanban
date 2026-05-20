@@ -185,7 +185,7 @@ h1 {
 
 .grey-line {
     width: 2px;
-    height: 102px;
+    height: 75%;
     background-color: var(--light-grey);
 }
 
