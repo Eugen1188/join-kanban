@@ -77,6 +77,22 @@
   width: 24px;
   height: 24px;
   transform: translateY(-50%);
+  opacity: 0;
+  cursor: pointer;
+}
+
+.date-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.date-picker-icon {
+  position: absolute;
+  right: 16px;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .input-addtask-date-modified {

@@ -66,8 +66,13 @@
           <div class="addtask-side-right">
             <div class="input-container">
               <label for="date">Due Date <span class="required-icon">*</span></label>
-              <input onclick="checkDateInputField()" autocomplete="off" onkeyup="checkDateInputField();getRequiredFormInputs()" class="input-addtask-date-modified" id="date" type="text" maxlength="10" placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}" required />
-              <input type="date" id="dateNormal" autocomplete="off" class="input-addtask-datepicker pointer" pattern="\d{2}/\d{2}/\d{4}" onchange="formatDateInput();updateDateFieldValue();getRequiredFormInputs()" />
+              <div class="date-input-wrapper">
+                <input onclick="checkDateInputField()" autocomplete="off" onkeyup="checkDateInputField();getRequiredFormInputs()" class="input-addtask-date-modified" id="date" type="text" maxlength="10" placeholder="dd/mm/yyyy" pattern="\d{2}/\d{2}/\d{4}" required />
+                <input type="date" id="dateNormal" autocomplete="off" class="input-addtask-datepicker" pattern="\d{2}/\d{2}/\d{4}" onchange="formatDateInput();updateDateFieldValue();getRequiredFormInputs()" />
+                <svg class="date-picker-icon" onclick="document.getElementById('dateNormal').click()" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="cursor: pointer;">
+                  <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" fill="#a8a8a8"/>
+                </svg>
+              </div>
               <span id="inputReqiuredSpanDate" class="required-input-info d-none">this field is required</span>
             </div>
             <div class="input-container">
