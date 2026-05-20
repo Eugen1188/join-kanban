@@ -241,3 +241,17 @@
   color: var(--background-color-site);
   cursor: not-allowed;
 }
+
+#edit-card.d-none,
+#edit-card.dnone {
+  display: none !important;
+}
+
+#edit-card {
+  display: none;
+}
+
+#edit-card:not(.d-none):not(.dnone).open,
+#edit-card:not(.d-none):not(.dnone).show {
+  display: flex;
+}
