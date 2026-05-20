@@ -196,3 +196,86 @@ body {
 .help-for-responsive {
   display: none;
 }
+
+@media only screen and (max-width: 1023px) {
+  .main-header {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 80px;
+    min-height: 80px;
+    background-color: #2a3647;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+  }
+
+  .main-header > img,
+  .rights-cont {
+    display: none;
+  }
+
+  .menu {
+    width: 100%;
+    height: 80px;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .menu_buttons {
+    width: 80px;
+    height: 76px;
+    margin: 0;
+    border-radius: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .menu_buttons div {
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+  }
+
+  .menu_buttons img {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+  }
+
+  .main-header a {
+    width: auto;
+    height: auto;
+    text-decoration: none;
+  }
+
+  .summary-btn,
+  .addtask-btn,
+  .board-btn,
+  .contacts-btn {
+    border-radius: 16px;
+  }
+
+  .head-top {
+    display: none;
+  }
+
+  .logout-info-menu-main-cont {
+    right: 16px;
+    top: 16px;
+  }
+}
