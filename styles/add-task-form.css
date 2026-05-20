@@ -80,7 +80,8 @@
 }
 
 .input-addtask-date-modified {
-  width: 398px;
+  width: 100%;
+  max-width: 398px;
   height: 24px;
   padding-block: 0;
   padding-inline: 0;
@@ -90,6 +91,8 @@
   border-radius: 10px;
   background-color: white;
   padding: 11px 21px;
+  box-sizing: border-box;
+  position: relative;
 }
 
 .prio-container {

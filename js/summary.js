@@ -1,5 +1,5 @@
 let urgentDates = [];
-
+let greetingShown = false;
 
 /**
  * init function to load the content and reset global variables
@@ -20,7 +20,11 @@ async function renderSummeryTasks() {
     tasksUrgent();
     renderLogedUser();
     userGreetings();
-    greetingResponsive();
+    // Nur beim ersten Besuch anzeigen
+    if (!greetingShown) {
+        greetingResponsive();
+        greetingShown = true;
+    }
 }
 
 
