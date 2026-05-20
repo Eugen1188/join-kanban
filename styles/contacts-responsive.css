@@ -11,16 +11,12 @@
     left: 646px;
   }
 
+  .close-btn {
+    left: 1038px;
+  }
+
   .edit-card-form {
     width: 630px;
-  }
-
-  .edit-card {
-    max-width: calc(100vw - 48px);
-  }
-
-  .edit-card-headline {
-    width: 420px;
   }
 }
 
@@ -51,38 +47,21 @@
     width: 579px;
   }
 
+  .close-btn {
+    left: 937px;
+  }
+
   .edit-card-headline {
     width: 404px;
     padding: 66px 20px;
   }
 
+  .main-header {
+    width: 154px;
+  }
+
   .single-contact-headline {
     gap: 8px;
-  }
-}
-
-@media (max-width: 1150px) {
-  .single-content-container {
-    left: 520px;
-    max-width: calc(100vw - 560px);
-  }
-
-  .single-contact-headline {
-    flex-direction: column;
-    align-items: flex-start;
-    height: auto;
-  }
-
-  .vertical-bar {
-    display: none;
-  }
-
-  .single-contact-headline h1 {
-    font-size: 48px;
-  }
-
-  .single-contact-headline span {
-    font-size: 22px;
   }
 }
 
@@ -107,21 +86,22 @@
     bottom: 80px;
     width: 100%;
     height: auto;
-    margin: 0;
     padding: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
+    margin: 0;
     display: flex;
     justify-content: center;
+    overflow-y: auto;
+    overflow-x: hidden;
     background-color: #ffffff;
     box-shadow: none;
+    z-index: 1;
     -webkit-overflow-scrolling: touch;
   }
 
   .contacts-conllection {
     width: 100%;
     max-width: 420px;
-    margin: 0;
+    margin-top: 0;
     padding: 24px 24px 112px;
   }
 
@@ -139,17 +119,17 @@
   }
 
   .btn-container {
-    background-color: transparent;
     width: 56px;
     height: 56px;
     margin: 0;
+    background-color: transparent;
   }
 
   .add-contacts-btn {
     width: 56px;
     height: 56px;
-    border-radius: 50%;
     padding: 0;
+    border-radius: 50%;
     gap: 0;
   }
 
@@ -177,19 +157,29 @@
 
   .single-content-container {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 100%;
+    right: auto;
+    bottom: 80px;
     width: 100%;
     max-width: none;
-    min-height: calc(100dvh - 80px);
+    min-width: 0;
+    height: auto;
     padding: 40px 24px 120px;
     box-sizing: border-box;
     background-color: var(--background-color-site);
     overflow-y: auto;
     z-index: 900;
+    transition: left 225ms ease-in-out;
+  }
+
+  .single-content-container:not(.d-none):not(.dnone) {
+    left: 0;
   }
 
   .single-contact-data-container {
     min-width: 0;
+    width: 100%;
   }
 
   .single-contact-headline {
@@ -283,6 +273,10 @@
 
   .contact-data:hover {
     background-color: rgba(0, 0, 0, 10%);
+  }
+
+  .opasity {
+    display: none !important;
   }
 }
 
