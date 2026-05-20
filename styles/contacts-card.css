@@ -1,14 +1,18 @@
 #edit-card {
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  height: 100dvh;
   z-index: 999;
   position: fixed;
   top: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.2);
+}
+
+#edit-card:not(:empty) {
+  display: flex;
 }
 
 .edit-card {
@@ -107,7 +111,7 @@
 .add-contacts-card {
   width: 467px;
   height: 594px;
-  padding: 66px 48px 66px 48px;
+  padding: 66px 48px;
   gap: 12px;
   background-color: gray;
   color: var(--background-color-site);
@@ -117,14 +121,19 @@
   width: 422px;
   height: 50px;
   border-radius: 10px;
-  padding: 13px 21px;
+  padding: 13px 52px 13px 21px;
   background-repeat: no-repeat;
   background-position: 95% 50%;
   background-size: 24px;
-  padding-right: 52px;
   border: 1px solid #d1d1d1;
   font-size: 20px;
   box-sizing: border-box;
+}
+
+.edit-card-from-input:focus,
+.edit-card-from-input:focus-within,
+.edit-card-from-input:focus-visible {
+  outline-color: var(--light-blue);
 }
 
 .edit-card-content img {
@@ -182,6 +191,16 @@
   animation: slideInMobileFromRight 225ms ease;
 }
 
+.slide-back-animation {
+  animation: slideOut 225ms ease-in;
+}
+
+#submitContact:disabled {
+  background-color: gray;
+  color: var(--background-color-site);
+  cursor: not-allowed;
+}
+
 @keyframes slideFromBottomToTop {
   0% {
     top: 160%;
@@ -218,17 +237,13 @@
   }
 
   100% {
-    margin-left: 0px;
+    margin-left: 0;
   }
-}
-
-.slide-back-animation {
-  animation: slideOut 225ms ease-in;
 }
 
 @keyframes slideOut {
   0% {
-    margin-left: 0px;
+    margin-left: 0;
   }
 
   100% {
@@ -236,22 +251,127 @@
   }
 }
 
-#submitContact:disabled {
-  background-color: gray;
-  color: var(--background-color-site);
-  cursor: not-allowed;
+@media (max-width: 1023px) {
+  #edit-card {
+    height: 100dvh;
+    z-index: 2000;
+  }
+
+  .edit-card {
+    flex-direction: column;
+    border-radius: 30px;
+    width: 400px;
+    max-width: calc(100vw - 32px);
+    height: 748px;
+    max-height: calc(100dvh - 48px);
+    overflow: hidden;
+  }
+
+  .edit-card-headline {
+    width: 100%;
+    padding: 20px;
+    border-radius: 30px 30px 0 0;
+    height: 40%;
+    box-sizing: border-box;
+  }
+
+  .edit-card-headline img {
+    display: none;
+  }
+
+  .edit-card-form {
+    border-radius: 0 0 30px 30px;
+    padding: 62px 20px 24px;
+    width: 100%;
+    height: 60%;
+    box-sizing: border-box;
+    flex-direction: column;
+  }
+
+  .edit-card-form-input {
+    width: 100%;
+  }
+
+  .edit-card-form-input form {
+    width: 100%;
+  }
+
+  .edit-card-from-input {
+    width: 100%;
+  }
+
+  .close-btn {
+    top: 2%;
+    right: 24px;
+    left: auto;
+  }
+
+  #closeBtn {
+    fill: var(--background-color-site);
+  }
+
+  .close-btn:hover {
+    background-color: var(--light-blue);
+  }
+
+  .mobileCirclePosition {
+    position: absolute;
+    top: 32%;
+  }
+
+  .right-slide-animation {
+    animation: slideFromBottomToTop 0.2s ease-in;
+  }
+
+  .slide-back-animation {
+    animation: slideFromTopToBottom 0.3s ease-in;
+  }
 }
 
-#edit-card.d-none,
-#edit-card.dnone {
-  display: none !important;
+@media (max-width: 500px) {
+  .edit-card {
+    width: 380px;
+  }
+
+  .edit-card-header {
+    font-size: 58px;
+  }
 }
 
-#edit-card {
-  display: none;
+@media (max-width: 389px) {
+  .edit-card {
+    width: 324px;
+    height: 542px;
+  }
+
+  .edit-card-header {
+    font-size: 44px;
+  }
+
+  .small-screen-display-none {
+    display: none;
+  }
+
+  .close-btn {
+    right: 18px;
+    left: auto;
+  }
+
+  .edit-card-form {
+    padding: 44px 16px 16px;
+  }
+
+  .edit-card-form-input form {
+    gap: 18px;
+  }
 }
 
-#edit-card:not(.d-none):not(.dnone).open,
-#edit-card:not(.d-none):not(.dnone).show {
-  display: flex;
+@media (max-width: 350px) {
+  .edit-card {
+    width: 310px;
+  }
+
+  .mobile-btn-font-size {
+    font-size: 14px;
+  }
 }
