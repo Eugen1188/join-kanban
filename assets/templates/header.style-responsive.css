@@ -55,7 +55,7 @@
 
     .head-top {
         position: sticky;
-        height: 80px;
+        /* height: 80px; */
         padding: 0;
         right: 0px;
         left: 0px;
