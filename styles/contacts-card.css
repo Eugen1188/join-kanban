@@ -1,237 +1,243 @@
 #edit-card {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    z-index: 999;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .edit-card {
-    height: 592px;
-    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
-    border-radius: 16px;
-    display: flex;
-    background-color: var(--background-color-site);
-    z-index: 3;
-    position: relative;
+  height: 592px;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  display: flex;
+  background-color: var(--background-color-site);
+  z-index: 3;
+  position: relative;
 }
 
 .edit-card-form {
-    width: 736px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 10px;
-    background-color: var(--background-color-site);
-    border-radius: 0 16px 16px 0;
+  width: 736px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 10px;
+  background-color: var(--background-color-site);
+  border-radius: 0 16px 16px 0;
 }
 
 .edit-card-form-input form {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    width: 422px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 422px;
 }
 
 .edit-card-headline {
-    width: 467px;
-    height: 592px;
-    padding: 66px 46px;
-    background-color: var(--button-color);
-    border-radius: 16px 0 0 16px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 12px;
+  width: 467px;
+  height: 592px;
+  padding: 66px 46px;
+  background-color: var(--button-color);
+  border-radius: 16px 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
 }
 
 .edit-card-headline img {
-    height: 66.48px;
-    width: 53.93px;
+  height: 66.48px;
+  width: 53.93px;
 }
 
 .edit-card-header {
-    font-weight: 700;
-    font-size: 61px;
-    color: var(--background-color-site);
-    display: flex;
-    flex-direction: column;
+  font-weight: 700;
+  font-size: 61px;
+  color: var(--background-color-site);
+  display: flex;
+  flex-direction: column;
 }
 
 .edit-card-btn-wrapper {
-    display: flex;
-    justify-self: start;
-    gap: 16px;
-    align-self: start;
+  display: flex;
+  justify-self: start;
+  gap: 16px;
+  align-self: start;
 }
 
 .card-circle-center {
-    margin-bottom: 32px;
+  margin-bottom: 32px;
 }
 
 .edit-card-btn {
-    height: 55px;
-    padding: 15px 25px;
-    border-radius: 8px;
-    font-size: 21px;
-    display: flex;
-    gap: 8px;
-    align-self: start;
+  height: 55px;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 21px;
+  display: flex;
+  gap: 8px;
+  align-self: start;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
 .contact-info-card {
-    height: 128px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  height: 128px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .contact-info-card a {
-    text-decoration: none;
-    color: var(--light-blue);
+  text-decoration: none;
+  color: var(--light-blue);
 }
 
 .contact-info-card .second-cart-font {
-    color: black;
+  color: black;
 }
 
 .add-contacts-card {
-    width: 467px;
-    height: 594px;
-    padding: 66px 48px 66px 48px;
-    gap: 12px;
-    background-color: gray;
-    color: var(--background-color-site);
+  width: 467px;
+  height: 594px;
+  padding: 66px 48px 66px 48px;
+  gap: 12px;
+  background-color: gray;
+  color: var(--background-color-site);
 }
 
 .edit-card-from-input {
-    width: 422px;
-    height: 50px;
-    border-radius: 10px;
-    padding: 13px 21px;
-    background-repeat: no-repeat;
-    background-position: 95% 50%;
-    background-size: 24px;
-    padding-right: 21px;
+  width: 422px;
+  height: 50px;
+  border-radius: 10px;
+  padding: 13px 21px;
+  background-repeat: no-repeat;
+  background-position: 95% 50%;
+  background-size: 24px;
+  padding-right: 52px;
+  border: 1px solid #d1d1d1;
+  font-size: 20px;
+  box-sizing: border-box;
 }
 
 .edit-card-content img {
-    height: 66.48px;
-    width: 53.93px;
+  height: 66.48px;
+  width: 53.93px;
 }
 
 .edit-card-footer {
-    font-weight: 700;
-    font-size: 61px;
-    color: var(--background-color-site);
-    display: flex;
-    flex-direction: column;
+  font-weight: 700;
+  font-size: 61px;
+  color: var(--background-color-site);
+  display: flex;
+  flex-direction: column;
 }
 
 .edit-card-content {
-    width: 745px;
-    height: 592px;
-    padding: 66px 46px;
-    background-color: var(--content-color);
-    border-radius: 0 16px 16px 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 12px;
+  width: 745px;
+  height: 592px;
+  padding: 66px 46px;
+  background-color: var(--content-color);
+  border-radius: 0 16px 16px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
 }
 
 .edit-card-from-input:active {
-    border: 1px solid var(--contacts-link-color);
+  border: 1px solid var(--contacts-link-color);
 }
 
 .large-card-text {
-    font-size: 27px;
-    font-weight: 400;
-    display: inline-block;
+  font-size: 27px;
+  font-weight: 400;
+  display: inline-block;
 }
 
 .small-card-text {
-    font-size: 27px;
-    font-weight: 400;
-    display: inline-block;
+  font-size: 27px;
+  font-weight: 400;
+  display: inline-block;
 }
 
 .single-contact-name-card {
-    height: 88px;
-    font-size: 47px;
-    flex: 1;
+  height: 88px;
+  font-size: 47px;
+  flex: 1;
 }
 
 .right-slide-animation {
-    animation: slideIn 225ms ease-in;
+  animation: slideIn 225ms ease-in;
 }
 
 .slideInMobile {
-    animation: slideInMobileFromRight 225ms ease;
+  animation: slideInMobileFromRight 225ms ease;
 }
 
 @keyframes slideFromBottomToTop {
-    0% {
-        top: 160%;
-    }
+  0% {
+    top: 160%;
+  }
 
-    100% {
-        top: 10%;
-    }
+  100% {
+    top: 10%;
+  }
 }
 
 @keyframes slideFromTopToBottom {
-    0% {
-        top: 10%;
-    }
+  0% {
+    top: 10%;
+  }
 
-    100% {
-        top: 160%;
-    }
+  100% {
+    top: 160%;
+  }
 }
 
 @keyframes slideInMobileFromRight {
-    0% {
-        right: 0;
-    }
+  0% {
+    right: 0;
+  }
 
-    100% {
-        right: 111%;
-    }
+  100% {
+    right: 111%;
+  }
 }
 
 @keyframes slideIn {
-    0% {
-        margin-left: 1000px;
-    }
+  0% {
+    margin-left: 1000px;
+  }
 
-    100% {
-        margin-left: 0px;
-    }
+  100% {
+    margin-left: 0px;
+  }
 }
 
 .slide-back-animation {
-    animation: slideOut 225ms ease-in;
+  animation: slideOut 225ms ease-in;
 }
 
 @keyframes slideOut {
-    0% {
-        margin-left: 0px;
-    }
+  0% {
+    margin-left: 0px;
+  }
 
-    100% {
-        margin-left: 1000px;
-    }
+  100% {
+    margin-left: 1000px;
+  }
 }
 
 #submitContact:disabled {
-    background-color: gray;
-    color: var(--background-color-site);
-    cursor: not-allowed;
+  background-color: gray;
+  color: var(--background-color-site);
+  cursor: not-allowed;
 }

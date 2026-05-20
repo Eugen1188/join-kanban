@@ -1,274 +1,188 @@
 .mobile-btn-font-size {
-    font-size: 17px;
+  font-size: 17px;
 }
 
 .mobile-single-user-card {
-    background-color: #F6F7F8;
+  background-color: #f6f7f8;
 }
 
 .mobile-big-circle {
-    width: 80px;
-    height: 80px;
-    font-size: 27px;
-}
-
-.small-screen-display-none {}
-
-
-.mobile-btn-font-size {
-    font-size: 17px;
+  width: 80px;
+  height: 80px;
+  font-size: 27px;
 }
 
 @media (max-width: 1023px) {
-    .desktop-view-off {
-        display: none;
-    }
+  .desktop-view-off {
+    display: none;
+  }
 
-    .contacts-container {
-        margin: 0px auto;
-        position: unset;
-        overflow-y: scroll;
-        height: calc(100% - 160px);
-        width: 100%;
-    }
+  .mobile-center {
+    display: flex;
+    justify-content: end;
+  }
 
-    .mobile-center {
-        display: flex;
-        justify-content: end;
-    }
+  .contacts-icon-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
 
-    .main-header {
-        width: 100%;
-    }
+  ::-webkit-scrollbar {
+    display: none;
+  }
 
-    .dnone {
-        display: none;
-    }
+  .edit-card-form {
+    flex-direction: column;
+  }
 
-    .add-contacts-btn {
-        width: 56px;
-        border-radius: 50%;
-    }
+  #edit-card {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100dvh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
 
-    .contacts-conllection {
-        margin: 0;
-    }
+  .edit-card {
+    flex-direction: column;
+    border-radius: 30px;
+    width: 400px;
+    max-width: calc(100vw - 32px);
+    height: 748px;
+    max-height: calc(100dvh - 48px);
+    overflow: hidden;
+  }
 
-    .btn-container {
-        background-color: unset;
-        margin-right: 14px;
-        width: 56px;
-        height: 56px;
-    }
+  .edit-card-headline {
+    width: 100%;
+    padding: 20px;
+    border-radius: 30px 30px 0 0;
+    height: 40%;
+    box-sizing: border-box;
+  }
 
-    .contacts-btn-bg {
-        display: unset;
-        width: 56px;
-        height: 56px;
-        left: 81%;
-        right: 0px;
-        top: calc(100% - 160px);
-    }
+  .edit-card-headline img {
+    display: none;
+  }
 
-    .contacts-icon-container {
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-    }
+  .edit-card-form {
+    border-radius: 0 0 30px 30px;
+    padding: 62px 20px 24px;
+    width: 100%;
+    height: 60%;
+    box-sizing: border-box;
+  }
 
-    ::-webkit-scrollbar {
-        display: none;
-    }
+  .edit-card-form-input {
+    width: 100%;
+  }
 
-    .desktop-view-off {
-        display: none;
-    }
+  .edit-card-form-input form {
+    width: 100%;
+  }
 
-    .single-contact-headline {
-        flex-direction: column;
-        align-items: flex-start;
-        transition: none;
-        gap: 8px;
-        margin: 0;
-        height: 110px;
+  #contacts-form {
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+  }
 
-    }
+  .close-btn {
+    top: 2%;
+    right: 24px;
+    left: auto;
+  }
 
-    .single-data-headline {
-        gap: 20px;
-    }
+  #closeBtn {
+    fill: var(--background-color-site);
+  }
 
-    .single-contact-name-card {
-        display: flex;
-        align-items: center;
-        font-size: 27px;
-    }
+  .close-btn:hover {
+    background-color: var(--light-blue);
+  }
 
-    .single-contact-data-container {
-        min-width: 0;
-    }
+  .icons-contacts:hover {
+    color: black;
+  }
 
-    .single-contact-headline h1 {
-        font-size: 47px;
-    }
+  .mobileCirclePosition {
+    position: absolute;
+    top: 32%;
+  }
 
-    .single-contact-headline span {
-        font-size: 20px;
-        width: 200px;
-    }
+  .edit-card-from-input {
+    width: 100%;
+  }
 
-    .desktop-none {
-        display: unset;
-    }
+  .right-slide-animation {
+    animation: slideFromBottomToTop 0.2s ease-in;
+  }
 
-    #edit-card {
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        margin: 0 !important;
-    }
+  .slide-back-animation {
+    animation: slideFromTopToBottom 0.3s ease-in;
+  }
 
-    .edit-card-form {
-        flex-direction: column;
-    }
-
-    .edit-card {
-        flex-direction: column;
-        border-radius: 30px;
-        width: 400px;
-        height: 748px;
-    }
-
-    .edit-card-headline {
-        width: inherit;
-        padding: 20px;
-        border-radius: 30px 30px 0 0;
-        height: 40%;
-    }
-
-    .edit-card-headline img {
-        display: none;
-    }
-
-    .edit-card-form {
-        border-radius: 0 0 30px 30px;
-        padding: 62px 20px;
-        width: inherit;
-        height: 60%;
-    }
-
-    .edit-card-form-input {
-        width: inherit;
-    }
-
-    #contacts-form {
-        width: inherit;
-        padding: 16px;
-    }
-
-    .close-btn {
-        top: 2%;
-        left: 90%;
-    }
-
-    #closeBtn {
-        fill: var(--background-color-site);
-    }
-
-    .close-btn:hover {
-        background-color: var(--light-blue);
-    }
-
-    .icons-contacts:hover {
-        color: black;
-    }
-
-    #edit-card {
-        position: fixed !important;
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-    }
-
-    .mobileCirclePosition {
-        position: absolute;
-        top: 32%;
-    }
-
-    .edit-card-from-input {
-        width: 100%;
-    }
-
-    .right-slide-animation {
-        animation: slideFromBottomToTop 0.2s ease-in
-    }
-
-    .slide-back-animation {
-        animation: slideFromTopToBottom 0.3s ease-in
-    }
-
-    #contact-success {
-        top: 10%;
-        left: 25%;
-    }
-
-    .single-contact-data-container {
-        display: none;
-    }
-
-    #contact-success {
-        display: flex;
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-        top: 14%;
-        left: 0;
-    }
+  #contact-success {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    top: 14%;
+    left: 0;
+  }
 }
 
 @media (max-width: 500px) {
-    .edit-card {
-        width: 380px;
-    }
+  .edit-card {
+    width: 380px;
+  }
 
-    .edit-card-header {
-        font-size: 58px;
-    }
+  .edit-card-header {
+    font-size: 58px;
+  }
 }
 
 @media (max-width: 389px) {
-    .edit-card {
-        width: 324px;
-        height: 542px;
-    }
+  .edit-card {
+    width: 324px;
+    height: 542px;
+  }
 
-    .edit-card-header {
-        font-size: 44px;
-    }
+  .edit-card-header {
+    font-size: 44px;
+  }
 
-    .small-screen-display-none {
-        display: none;
-    }
+  .small-screen-display-none {
+    display: none;
+  }
 
-    #edit-card {
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
-    }
+  .close-btn {
+    right: 18px;
+    left: auto;
+  }
 
-    .close-btn {
-        left: 86%;
-    }
+  .edit-card-form {
+    padding: 44px 16px 16px;
+  }
+
+  .edit-card-form-input form {
+    gap: 18px;
+  }
 }
 
 @media (max-width: 350px) {
-    .edit-card {
-        width: 310px;
-    }
+  .edit-card {
+    width: 310px;
+  }
 
-    .mobile-btn-font-size {
-        font-size: 14px;
-    }
+  .mobile-btn-font-size {
+    font-size: 14px;
+  }
 }
