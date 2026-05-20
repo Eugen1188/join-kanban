@@ -47,15 +47,16 @@
   gap: 8px;
   box-sizing: border-box;
   position: absolute;
-  top: 56px;
+  top: 56.5px;
   right: 16px;
+  left: auto;
   border-radius: 16px 0 16px 16px;
   min-height: 140px;
   width: 186px;
   background-color: var(--button-color);
   color: white;
   padding: 16px;
-  z-index: 3000;
+  z-index: 1000;
 }
 
 .drop-menu-option {
@@ -84,9 +85,22 @@
   right: 16px;
 }
 
+/* Desktop scroll fix */
+.board-main {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.board-card-section {
+  overflow-y: visible;
+}
+
 @media (max-width: 1430px) {
   .board-main {
     flex-direction: column;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
   }
 
   .divider {
@@ -95,6 +109,10 @@
 
   .task-headline {
     justify-content: flex-start !important;
+  }
+
+  .task-overlay-translate-in-task {
+    translate: calc(-100vw - 50%);
   }
 
   .required-info {
@@ -116,6 +134,7 @@
     overflow-x: auto;
     overflow-y: hidden;
     height: min-content;
+    min-height: 256px;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -134,7 +153,8 @@
 @media (max-width: 1300px) {
   .button-container {
     width: 100%;
-    position: static;
+    position: sticky;
+    bottom: 0;
     display: flex;
     justify-content: flex-end;
     align-items: center;
@@ -148,14 +168,20 @@
     right: 16px;
   }
 
-  .input-addtask,
-  #subtask,
-  .input-container {
+  .input-addtask {
+    width: 100%;
+  }
+
+  #subtask {
     width: 100%;
   }
 
   #title {
     width: calc(100% - 42px);
+  }
+
+  .input-container {
+    width: 100%;
   }
 }
 
@@ -202,15 +228,22 @@
     display: flex;
   }
 
+  body {
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+  }
+
   main {
     display: flex;
     flex-direction: column;
-    min-height: calc(100dvh - 160px);
-    height: auto;
+    width: 100%;
+    height: calc(100dvh - 80px);
+    min-height: calc(100dvh - 80px);
     position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding-bottom: calc(110px + env(safe-area-inset-bottom));
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-bottom: calc(112px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -223,37 +256,23 @@
   }
 
   .board-top {
+    width: calc(100% - 32px);
+    padding: 0 16px;
     position: static !important;
-    width: 100%;
-    height: auto;
-    padding: 32px 24px 24px;
     left: auto;
+    height: auto;
+    margin-top: 32px;
   }
 
   .board-top-content {
-    width: 100%;
-    max-width: none;
     padding: 0;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .board-top-cont-left {
     width: 100%;
-    margin-bottom: 0;
   }
 
-  .board-top-cont-left h2 {
-    font-size: 47px;
-    margin: 0;
-  }
-
-  .board-top-cont-right,
   .board-top-form,
-  .board-search-form,
+  .board-top-cont-right,
   #board-search-task {
     width: 100%;
-    max-width: none;
   }
 
   .board-top-cont-right {
@@ -261,107 +280,76 @@
   }
 
   .board-search-form {
+    width: 100%;
+    max-width: none;
     margin-right: 0;
   }
 
   .board-main {
     position: static !important;
-    inset: auto;
-    width: 100%;
-    height: auto;
-    padding: 0 24px;
-    overflow: visible;
-    gap: 24px;
-  }
-
-  .board-title {
-    position: static !important;
-    width: 100%;
-    max-width: none;
-    gap: 24px;
-  }
-
-  .board-title-content {
-    width: 100%;
-    min-width: 0;
+    inset: auto !important;
+    width: calc(100% - 32px) !important;
+    height: auto !important;
+    min-height: auto !important;
+    padding: 0 16px 32px !important;
+    overflow-y: visible !important;
+    overflow-x: hidden !important;
+    flex: 0 0 auto;
   }
 
   .board-card-section {
     width: 100%;
+    height: auto !important;
+    min-height: auto;
+    align-items: flex-start;
   }
 
   #todo,
   #in-progress,
   #await-feedback,
   #done {
-    width: 100%;
     display: flex;
     flex-direction: row;
-    gap: 16px;
-    overflow-x: auto;
-    overflow-y: hidden;
-    padding-bottom: 8px;
+    width: 100%;
+    min-height: 256px;
+    height: min-content;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .board-title-content {
+    width: 100%;
   }
 
   .task-overlay {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw;
+    position: fixed;
+    inset: 0;
     height: 100dvh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100vw;
     z-index: 2000;
   }
 
   .task-overlay-bg {
-    position: fixed !important;
-    inset: 0 !important;
-    width: 100vw;
     height: 100dvh;
-    z-index: 2000;
+    width: 100vw;
   }
 
   .task-overlay-content {
-    position: fixed !important;
-    left: 50% !important;
-    top: 50% !important;
-    width: min(525px, calc(100vw - 32px));
-    max-width: calc(100vw - 32px);
+    width: calc(100% - 32px);
+    max-width: 525px;
     max-height: calc(100dvh - 120px);
     overflow-y: auto;
-    transform: translate(-50%, -50%) !important;
-    translate: none !important;
-    z-index: 3000;
-    padding: 40px 32px;
   }
 
-  .task-overlay-translate-in,
-  .task-overlay-translate-in-task {
-    transform: translate(-50%, -50%) !important;
-    translate: none !important;
-  }
-
-  .task-overlay-translate-out {
-    transform: translate(120vw, -50%) !important;
-    translate: none !important;
+  .task-overlay-translate-in {
+    translate: calc(-100vw - 50%);
   }
 }
 
 @media (max-width: 550px) {
-  .board-top {
-    padding: 24px 16px 24px;
-  }
-
-  .board-main {
-    padding: 0 16px;
-  }
-
   .task-overlay-content {
-    width: calc(100vw - 32px);
-    max-height: calc(100dvh - 150px);
-    border-radius: 30px;
-    padding: 32px 24px;
+    overflow-y: auto;
     gap: 16px;
   }
 
@@ -370,8 +358,7 @@
   }
 
   .task-overlay-title {
-    font-size: 36px !important;
-    line-height: 1.1;
+    font-size: 32px !important;
   }
 
   .task-overlay-content span {
