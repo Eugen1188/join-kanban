@@ -18,13 +18,14 @@
     padding: 32px 16px calc(24px + env(safe-area-inset-bottom));
   }
 
-  /* .login-top-cont {
-    order: 2;
+  .login-top-cont {
+    order: 3;
     width: 100%;
     justify-content: center !important;
     padding: 0 !important;
     margin-top: 24px;
-  } */
+    position: static !important;
+  }
 
   .login-top-con {
     position: relative;
@@ -34,11 +35,27 @@
     order: 1;
     width: min(340px, calc(100vw - 40px)) !important;
     height: auto !important;
-    min-height: 430px !important;
-    padding: 28px 16px;
+    min-height: auto !important;
+    padding: 32px 24px;
     border-radius: 30px;
-    justify-content: flex-start;
-    gap: 14px;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .form-cont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .form-cont form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
   }
 
   .login-headline {
@@ -51,27 +68,36 @@
   .login-headline span {
     font-size: 47px !important;
     line-height: 1;
+    color: #000000;
   }
 
   .line {
     width: 88px !important;
     margin-top: 0;
+    height: 4px !important;
   }
 
   .input-field {
-    width: min(100%, 300px) !important;
+    width: 100% !important;
+    max-width: 280px !important;
     height: 48px !important;
     margin-bottom: 16px;
     background-position-x: calc(100% - 24px) !important;
+    padding: 12px 21px !important;
+    box-sizing: border-box !important;
   }
 
   .checkbox-cont {
-    width: min(100%, 300px) !important;
+    width: 100% !important;
+    max-width: 280px !important;
     margin: 0 0 20px 0 !important;
+    display: flex;
+    align-items: center;
   }
 
   .login-buttons-cont {
-    width: 180px !important;
+    width: 100% !important;
+    max-width: 280px !important;
     height: auto !important;
     min-height: unset !important;
     flex-direction: column;
@@ -83,7 +109,7 @@
 
   .loginbutton,
   .loginguestbutton {
-    width: 180px !important;
+    width: 100% !important;
     height: 51px !important;
     margin: 0 !important;
   }
@@ -92,7 +118,8 @@
     margin-top: 0 !important;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 16px;
+    gap: 8px;
+    order: 2;
   }
 
   .signup-cont span {
@@ -100,9 +127,11 @@
   }
 
   .signup-button {
-    width: 100px;
+    width: auto;
+    padding: 8px 16px;
     height: 50px;
     margin-left: 0;
+    font-size: 16px;
   }
 
   .login-rights-cont {
@@ -129,8 +158,8 @@
     }
 
     to {
-      top: 40px;
-      left: 32px;
+      top: 50px;
+      left: 50px;
       width: 64px;
       height: 78px;
     }
@@ -151,15 +180,11 @@
     margin-top: 0;
     justify-content: space-evenly;
   }
-
-  .form-cont {
-    display: contents;
-  }
 }
 
 @media (max-width: 427px) {
   .login-cont {
-    width: min(340px, calc(100vw - 40px)) !important;
+    width: calc(100vw - 32px) !important;
     padding: 24px 14px;
   }
 
@@ -168,7 +193,18 @@
   }
 
   .input-field {
-    width: min(100%, 286px) !important;
+    width: 100% !important;
+    max-width: 270px !important;
+  }
+
+  .checkbox-cont {
+    width: 100% !important;
+    max-width: 270px !important;
+  }
+
+  .login-buttons-cont {
+    width: 100% !important;
+    max-width: 270px !important;
   }
 
   .reg-cont {
@@ -186,10 +222,10 @@
   }
 
   .login-cont {
-    min-height: 390px !important;
+    min-height: auto !important;
     padding-top: 20px;
     padding-bottom: 20px;
-    gap: 10px;
+    gap: 0;
   }
 
   .login-headline {

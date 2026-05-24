@@ -10,6 +10,13 @@
     animation: move-logo 1s ease-in-out forwards;
   }
 
+  @media (max-width: 668px) {
+    .animation-img {
+      width: 64px;
+      height: 78px;
+    }
+  }
+
 
   .input-field {
     width: 422px;
