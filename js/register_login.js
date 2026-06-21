@@ -1,76 +1,108 @@
-logedInUser=[];
-
-localStorage.setItem('rememberedEmail', '');
-localStorage.setItem('rememberedPassword', '');
-
+logedInUser = [];
 
 /**
- * init function to load the registered contacts
+ * Initialisiert registrierte Kontakte
+ * Überwacht den Auth-Status und lädt Benutzerdaten
  *
- * @author Eugen Ferchow
+ * @author Eugen Ferchow (aktualisiert für Firebase Auth)
  */
 async function initRegisteredContacts() {
-  userData = await getItemContacts('userData');
+  // Warte, bis currentUser gesetzt ist (aus firebase-config.js)
+  return new Promise((resolve) => {
+    const checkUser = setInterval(() => {
+      if (currentUser !== undefined) {
+        clearInterval(checkUser);
+        resolve();
+      }
+    }, 100);
+  });
 }
 
-
 /**
- * 
- * @returns {string}
- * check input password and email to login user or show an alert if password or email are wrong
- * if login succfully, push the input in logedInUser Array and forward the user to summary.html
+ * Login mit Firebase Authentication
+ * @async
+ * @returns {Promise<void>}
  */
 async function logIn() {
-  event.preventDefault(); // Kein Standardverhalten des Formulars
-  let email = document.getElementById('email').value;
-  let password = document.getElementById('password').value;
-  let loggedIn = false;
-  for (let i = 0; i < userData.length; i++) {
-    const element = userData[i];
-    if (element.email === email && element.password === password) {
-      loggedIn = true;
-      logedInUser.push(element);
-      await setItem("logedInUser", logedInUser);
-      window.location.href = BASE_URL + "summary.html";
-      saveRememberMe();
-      return;
+  event.preventDefault();
+  
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value.trim();
+  const inputRequiredElement = document.getElementById('inputRequiredLogIn');
+  
+  if (!email || !password) {
+    inputRequiredElement.classList.remove('d-none');
+    return;
+  }
+  
+  try {
+    // Firebase Authentication
+    const user = await loginUser(email, password);
+    
+    // Lade Benutzerprofil
+    const profile = await getUserProfile();
+    
+    logedInUser = [{
+      uid: user.uid,
+      email: user.email,
+      name: profile.name || '',
+      lastname: profile.lastname || '',
+      initials: profile.initials || '',
+      phone: profile.phone || '',
+      id: user.uid
+    }];
+    
+    // Speichere logedInUser für später
+    await setUserData("session/logedInUser", logedInUser);
+    
+    // Speichere auch im localStorage für schnelle Zugriffe
+    localStorage.setItem('logedInUser', JSON.stringify(logedInUser));
+    
+    // Speichere Remember Me wenn ausgewählt
+    if (document.getElementById('rememberMe').checked) {
+      localStorage.setItem('rememberEmail', email);
     }
-  }
-  document.getElementById('email').value = '';
-  document.getElementById('password').value = '';
-
-  passOutlineLogIn();
-}
-
-
-/**
- * remember me function
- * if user checked the checkmark field, save user password and email in localStorage
- */
-function saveRememberMe() {
-  let rememberMe = document.getElementById('rememberMe').checked;
-  var email = document.getElementById("email").value;
-  var password = document.getElementById("password").value;
-  if (rememberMe) {
-    localStorage.setItem('rememberedEmail', email);
-    localStorage.setItem('rememberedPassword', password);
-  } else {
-    localStorage.removeItem('rememberedEmail');
-    localStorage.removeItem('rememberedPassword');
+    
+    window.location.href = BASE_URL + "summary.html";
+    
+  } catch (error) {
+    console.error("Login Fehler:", error);
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
+    
+    // Zeige passende Fehlermeldung
+    if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+      inputRequiredElement.textContent = '* Wrong Email or Password';
+    } else if (error.code === 'auth/too-many-requests') {
+      inputRequiredElement.textContent = '* Zu viele Anmeldeversuche. Bitte später versuchen.';
+    } else {
+      inputRequiredElement.textContent = '* Login fehlgeschlagen';
+    }
+    
+    inputRequiredElement.classList.remove('d-none');
+    passOutlineLogIn();
   }
 }
 
 
 /**
- * load the user password from local Storage and put it in the input field
+ * Lädt gespeicherte Email aus localStorage
+ * @returns {void}
  */
 function loadRememberMe() {
-  let rememberedEmail = localStorage.getItem('rememberedEmail');
-  let rememberedPassword = localStorage.getItem('rememberedPassword');
-  if (rememberedEmail && rememberedPassword) {
-    document.getElementById("email").value = rememberedEmail;
-    document.getElementById("password").value = rememberedPassword;
+  const rememberEmail = localStorage.getItem('rememberEmail');
+  if (rememberEmail) {
+    document.getElementById("email").value = rememberEmail;
   }
+}
+
+/**
+ * Speichert Email im localStorage wenn Remember Me aktiviert
+ * Wird in logIn() aufgerufen
+ * @returns {void}
+ */
+function saveRememberMe() {
+  // Wird jetzt in logIn() selbst gehandhabt
 }
 
 
@@ -133,5 +165,98 @@ function	passOutlineLogIn(){
     passwordReg.style.border = '2px solid #ff8190';
     repPasswordReg.style.border = '2px solid #ff8190';
     document.getElementById('inputRequiredLogIn').classList.remove('d-none')
+  }
+}
+
+/**
+ * Registriert einen neuen Benutzer mit Firebase Authentication
+ * Ersetzt die alte saveNewUserData() Funktion
+ * @async
+ * @returns {Promise<void>}
+ */
+async function saveNewUserData() {
+  event.preventDefault();
+  
+  const nameInput = document.getElementById("name-reg").value.trim();
+  const email = document.getElementById("email-reg").value.trim();
+  const password = document.getElementById("password-reg").value.trim();
+  const passwordConfirm = document.getElementById("rep-password-reg").value.trim();
+  
+  // Validierung
+  if (!nameInput || !email || !password || !passwordConfirm) {
+    passOutline();
+    return;
+  }
+  
+  if (password !== passwordConfirm) {
+    passOutline();
+    return;
+  }
+  
+  if (!document.getElementById("registerCheckbox").checked) {
+    return;
+  }
+  
+  try {
+    // Parse Name
+    const nameParts = nameInput.split(" ");
+    const firstName = nameParts[0];
+    const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+    
+    // Registriere Benutzer mit Firebase
+    const user = await registerUser(email, password, {
+      name: firstName,
+      lastname: lastName,
+      initials: firstName.charAt(0).toUpperCase() + (lastName ? lastName.charAt(0).toUpperCase() : firstName.charAt(1).toUpperCase()),
+      phone: "No data stored",
+      circleColor: getRandomColor(),
+      createdAt: new Date().getTime()
+    });
+    
+    console.log("Benutzer erfolgreich registriert:", user.uid);
+    
+    // Zeige Erfolgsbestätigung
+    showRegistrationAnimation();
+    
+  } catch (error) {
+    console.error("Registrierungsfehler:", error);
+    
+    let errorMessage = '* Registration failed';
+    
+    if (error.code === 'auth/email-already-in-use') {
+      errorMessage = '* Email already in use';
+    } else if (error.code === 'auth/weak-password') {
+      errorMessage = '* Password too weak';
+    } else if (error.code === 'auth/invalid-email') {
+      errorMessage = '* Invalid email';
+    }
+    
+    passOutline();
+  }
+}
+
+/**
+ * Guest Login - erstellt eine temporäre Session
+ * @async
+ * @returns {Promise<void>}
+ */
+async function logInAsGuest() {
+  try {
+    logedInUser = [{
+      uid: 'guest',
+      email: 'guest@join.local',
+      name: 'Guest',
+      lastname: 'User',
+      initials: 'GU',
+      phone: '',
+      id: 'guest'
+    }];
+    
+    localStorage.setItem('logedInUser', JSON.stringify(logedInUser));
+    localStorage.setItem('isGuest', 'true');
+    
+    window.location.href = BASE_URL + "summary.html";
+  } catch (error) {
+    console.error("Guest Login Error:", error);
   }
 }

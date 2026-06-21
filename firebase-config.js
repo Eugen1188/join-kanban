@@ -23,6 +23,26 @@ try {
 const database = firebase.database();
 console.log("Database Referenz erstellt:", database);
 
+// Firebase Auth Reference
+const auth = firebase.auth();
+console.log("Firebase Auth initialisiert:", auth);
+
+// Globale Variable für aktuellen User
+let currentUser = null;
+
+// Überwache Auth-Zustandsänderungen
+firebase.auth().onAuthStateChanged((user) => {
+  currentUser = user;
+  if (user) {
+    console.log("Benutzer angemeldet:", user.uid);
+    localStorage.setItem('currentUserId', user.uid);
+  } else {
+    console.log("Benutzer abgemeldet");
+    localStorage.removeItem('currentUserId');
+    currentUser = null;
+  }
+});
+
 /**
  * Speichert einen Wert in Firebase Realtime Database
  * @async
@@ -73,5 +93,156 @@ async function getItemContacts(key) {
   } catch (error) {
     console.error("Fehler beim Abrufen von " + key + ":", error);
     return [];
+  }
+}
+
+/**
+ * Speichert Daten für den aktuellen Benutzer
+ * @async
+ * @function setUserData
+ * @param {string} path - Der Pfad relative zum Benutzer (z.B. "tasks", "contacts")
+ * @param {*} value - Der zu speichernde Wert
+ * @returns {Promise<void>}
+ */
+async function setUserData(path, value) {
+  if (!currentUser) {
+    throw new Error("Kein Benutzer angemeldet");
+  }
+  return new Promise((resolve, reject) => {
+    console.log(`Firebase: Speichern von users/${currentUser.uid}/${path}`);
+    database.ref(`users/${currentUser.uid}/${path}`).set(value, function(error) {
+      if (error) {
+        console.error("Fehler beim Speichern in Firebase:", error);
+        reject(error);
+      } else {
+        console.log("Firebase: Erfolgreich gespeichert!");
+        resolve({ success: true });
+      }
+    });
+  });
+}
+
+/**
+ * Ruft Daten für den aktuellen Benutzer ab
+ * @async
+ * @function getUserData
+ * @param {string} path - Der Pfad relative zum Benutzer (z.B. "tasks", "contacts")
+ * @returns {Promise<*>} Die gespeicherten Daten
+ */
+async function getUserData(path) {
+  if (!currentUser) {
+    console.warn("Kein Benutzer angemeldet, gebe leeres Array zurück");
+    return [];
+  }
+  
+  try {
+    const snapshot = await database.ref(`users/${currentUser.uid}/${path}`).once("value");
+    const data = snapshot.val();
+    
+    if (data === null) {
+      return [];
+    }
+    
+    if (Array.isArray(data)) {
+      return data;
+    }
+    
+    return data;
+  } catch (error) {
+    console.error("Fehler beim Abrufen von " + path + ":", error);
+    return [];
+  }
+}
+
+/**
+ * Speichert Benutzerprofildaten
+ * @async
+ * @function saveUserProfile
+ * @param {Object} profileData - Die Profilinformationen
+ * @returns {Promise<void>}
+ */
+async function saveUserProfile(profileData) {
+  if (!currentUser) {
+    throw new Error("Kein Benutzer angemeldet");
+  }
+  
+  const profile = {
+    uid: currentUser.uid,
+    email: currentUser.email,
+    ...profileData,
+    updatedAt: new Date().getTime()
+  };
+  
+  await setUserData("profile", profile);
+}
+
+/**
+ * Ruft das Benutzerprofil ab
+ * @async
+ * @function getUserProfile
+ * @returns {Promise<Object>} Die Profildaten
+ */
+async function getUserProfile() {
+  return await getUserData("profile");
+}
+
+/**
+ * Registriert einen neuen Benutzer mit Email und Passwort
+ * @async
+ * @function registerUser
+ * @param {string} email - Email des Benutzers
+ * @param {string} password - Passwort des Benutzers
+ * @param {Object} profileData - Zusätzliche Profildaten (name, lastname, etc.)
+ * @returns {Promise<Object>} User-Objekt
+ */
+async function registerUser(email, password, profileData) {
+  try {
+    const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+    const user = userCredential.user;
+    
+    // Speichere Benutzerprofil
+    await saveUserProfile(profileData);
+    
+    console.log("Benutzer erfolgreich registriert:", user.uid);
+    return user;
+  } catch (error) {
+    console.error("Fehler bei der Registrierung:", error);
+    throw error;
+  }
+}
+
+/**
+ * Meldet einen Benutzer mit Email und Passwort an
+ * @async
+ * @function loginUser
+ * @param {string} email - Email des Benutzers
+ * @param {string} password - Passwort des Benutzers
+ * @returns {Promise<Object>} User-Objekt
+ */
+async function loginUser(email, password) {
+  try {
+    const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+    console.log("Benutzer erfolgreich angemeldet:", userCredential.user.uid);
+    return userCredential.user;
+  } catch (error) {
+    console.error("Fehler beim Login:", error);
+    throw error;
+  }
+}
+
+/**
+ * Meldet den aktuellen Benutzer ab
+ * @async
+ * @function logoutUser
+ * @returns {Promise<void>}
+ */
+async function logoutUser() {
+  try {
+    await firebase.auth().signOut();
+    currentUser = null;
+    console.log("Benutzer erfolgreich abgemeldet");
+  } catch (error) {
+    console.error("Fehler beim Abmelden:", error);
+    throw error;
   }
 }

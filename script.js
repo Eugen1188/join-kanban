@@ -30,9 +30,41 @@ window.addEventListener("resize", function () {
 
 
 async function initDisclaimer() {
-  logedInUser = await getItemContacts("logedInUser");
-  if (logedInUser.length == 0) {
-    navigateToIndex();
+  // Warte bis currentUser initialisiert ist
+  let retries = 0;
+  const maxRetries = 30;
+  
+  while (currentUser === undefined && retries < maxRetries) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+    retries++;
+  }
+  
+  // Prüfe ob Benutzer angemeldet ist
+  if (!currentUser) {
+    // Prüfe localStorage für alte Sessions
+    const storedUser = localStorage.getItem('logedInUser');
+    if (!storedUser) {
+      navigateToIndex();
+    } else {
+      try {
+        logedInUser = JSON.parse(storedUser);
+      } catch (e) {
+        navigateToIndex();
+      }
+    }
+  } else {
+    // Lade logedInUser aus Firebase
+    const userProfile = await getUserProfile();
+    logedInUser = [{
+      uid: currentUser.uid,
+      email: currentUser.email,
+      name: userProfile.name || '',
+      lastname: userProfile.lastname || '',
+      initials: userProfile.initials || '',
+      phone: userProfile.phone || '',
+      id: currentUser.uid
+    }];
+    localStorage.setItem('logedInUser', JSON.stringify(logedInUser));
   }
 }
 /**
@@ -94,13 +126,25 @@ function createOverlayContentHTML() {
 
 /**
  * Asynchronously retrieves and parses the task data from storage to populate the tasks array.
+ * Aktualisiert für Firebase mit benutzerabhängigen Daten
  * @async
  * @function getAllTasksData
- * @author Kevin Müller
+ * @author Kevin Müller (aktualisiert für Firebase)
  */
 
 async function getAllTasksData() {
-  allTasks = await getItemContacts("test_board");
+  try {
+    if (currentUser) {
+      // Lade Aufgaben des aktuellen Benutzers
+      allTasks = await getUserData("tasks");
+    } else {
+      // Fallback auf alte Methode wenn noch nicht angemeldet
+      allTasks = await getItemContacts("test_board");
+    }
+  } catch (error) {
+    console.error("Fehler beim Laden der Tasks:", error);
+    allTasks = [];
+  }
 }
 
 
