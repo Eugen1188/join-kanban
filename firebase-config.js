@@ -25,7 +25,14 @@ console.log("Database Referenz erstellt:", database);
 
 // Firebase Auth Reference
 const auth = firebase.auth();
-console.log("Firebase Auth initialisiert:", auth);
+console.log("Firebase Auth initialisiert - Auth vorhanden:", !!auth);
+
+// Teste ob Auth verfügbar ist
+if (!firebase.auth) {
+  console.error("⚠️ WARNUNG: firebase.auth ist nicht verfügbar!");
+} else {
+  console.log("✓ firebase.auth ist verfügbar");
+}
 
 // Globale Variable für aktuellen User
 let currentUser = null;
@@ -197,6 +204,7 @@ async function getUserProfile() {
  */
 async function registerUser(email, password, profileData) {
   try {
+    console.log("Starte Registrierung für:", email);
     const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
     const user = userCredential.user;
     
@@ -206,7 +214,9 @@ async function registerUser(email, password, profileData) {
     console.log("Benutzer erfolgreich registriert:", user.uid);
     return user;
   } catch (error) {
-    console.error("Fehler bei der Registrierung:", error);
+    console.error("Fehler bei der Registrierung - Code:", error.code);
+    console.error("Fehler bei der Registrierung - Nachricht:", error.message);
+    console.error("Vollständiger Error:", error);
     throw error;
   }
 }
@@ -221,11 +231,14 @@ async function registerUser(email, password, profileData) {
  */
 async function loginUser(email, password) {
   try {
+    console.log("Starte Login für:", email);
     const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
     console.log("Benutzer erfolgreich angemeldet:", userCredential.user.uid);
     return userCredential.user;
   } catch (error) {
-    console.error("Fehler beim Login:", error);
+    console.error("Fehler beim Login - Code:", error.code);
+    console.error("Fehler beim Login - Nachricht:", error.message);
+    console.error("Vollständiger Error:", error);
     throw error;
   }
 }
