@@ -31,16 +31,19 @@ console.log("Database Referenz erstellt:", database);
  * @param {*} value - Der Wert, der gespeichert werden soll
  * @returns {Promise<void>}
  */
-async function setItem(key, value) {
-  try {
+function setItem(key, value) {
+  return new Promise((resolve, reject) => {
     console.log("Firebase: Speichern von", key, "mit Wert:", value);
-    await database.ref(key).set(value);
-    console.log("Firebase: Erfolgreich gespeichert!", key);
-    return { success: true };
-  } catch (error) {
-    console.error("Fehler beim Speichern in Firebase:", error);
-    throw error;
-  }
+    database.ref(key).set(value, function(error) {
+      if (error) {
+        console.error("Fehler beim Speichern in Firebase:", error);
+        reject(error);
+      } else {
+        console.log("Firebase: Erfolgreich gespeichert!", key);
+        resolve({ success: true });
+      }
+    });
+  });
 }
 
 /**
