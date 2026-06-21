@@ -1,6 +1,4 @@
 const BASE_URL = window.location.hostname === "localhost" ? "./" : "/join-kanban/";
-const STORAGE_TOKEN = "B0S7VW5J7TMVF1N3C8G1FX6TF8A9FYUYYTJ8W60E";
-const STORAGE_URL = "https://remote-storage.developerakademie.org/item";
 let allTasks = [];
 let logedInUser = [];
 let logedIn = false;
@@ -92,23 +90,7 @@ function createOverlayContentHTML() {
   return html;
 }
 
-/**
- * Speichert einen Wert im Speicher.
- * @async
- * @function setItem
- * @param {string} key - Der Schlüssel, unter dem der Wert gespeichert werden soll.
- * @param {*} value - Der Wert, der gespeichert werden soll.
- * @returns {Promise<Object>} Ein Promise, das das Ergebnis des Speicherns zurückgibt.
- * @throws {Error} - Ein Fehler tritt auf, wenn das Speichern fehlschlägt.
- */
-
-async function setItem(key, value) {
-  const payload = { key, value, token: STORAGE_TOKEN };
-  return await fetch(STORAGE_URL, {
-    method: "POST", // fügt Daten hinzu
-    body: JSON.stringify(payload), // definiert was gesendet wird
-  }).then((res) => res.json());
-}
+// setItem und getItemContacts werden jetzt von firebase-config.js bereitgestellt
 
 /**
  * Asynchronously retrieves and parses the task data from storage to populate the tasks array.
@@ -292,28 +274,7 @@ async function logOut() {
   window.location = BASE_URL + "index.html";
 }
 
-/**
- * Retrieves contacts associated with a specified key from a storage endpoint.
- * @async
- * @function getItemContacts
- * @param {string} key - The key associated with the contacts to retrieve.
- * @returns {Promise<Array>} A promise that resolves to an array of contacts.
- * @throws {Error} Throws an error if there is a problem with the retrieval process.
- * @author Dragan
- */
-
-async function getItemContacts(key) {
-  const url = `${STORAGE_URL}?key=${key}&token=${STORAGE_TOKEN}`;
-  try {
-    let response = await fetch(url);
-    if (response.ok) {
-      const responseData = await response.json();
-      return JSON.parse(responseData.data.value);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-}
+// getItemContacts wird jetzt von firebase-config.js bereitgestellt
 
 
 /**
