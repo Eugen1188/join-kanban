@@ -9,11 +9,19 @@ const firebaseConfig = {
   appId: "1:6164616936j2:web:a8b02f982f3efd5450125d"
 };
 
+console.log("Firebase Config geladen", firebaseConfig);
+
 // Firebase initialisieren
-firebase.initializeApp(firebaseConfig);
+try {
+  firebase.initializeApp(firebaseConfig);
+  console.log("Firebase erfolgreich initialisiert");
+} catch (error) {
+  console.error("Fehler beim Initialisieren von Firebase:", error);
+}
 
 // Referenz zur Realtime Database
 const database = firebase.database();
+console.log("Database Referenz erstellt:", database);
 
 /**
  * Speichert einen Wert in Firebase Realtime Database
