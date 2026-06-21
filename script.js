@@ -253,15 +253,22 @@ function renderLogedUser() {
  * if push the guest login button, push guestArray in the logedInUser Array 
  */
 async function logInAsGuest() {
-  guestArray = {
-    name: "Guest",
-    email: "guest@guest.org",
-    password: "password",
-    initials: "G",
-  };
-  logedInUser.push(guestArray);
-  await setItem("logedInUser", logedInUser);
-  window.location.href = BASE_URL + "summary.html";
+  try {
+    guestArray = {
+      name: "Guest",
+      email: "guest@guest.org",
+      password: "password",
+      initials: "G",
+    };
+    logedInUser.push(guestArray);
+    console.log("Speichere Gast-Benutzer:", logedInUser);
+    await setItem("logedInUser", logedInUser);
+    console.log("Gast-Benutzer erfolgreich gespeichert");
+    window.location.href = BASE_URL + "summary.html";
+  } catch (error) {
+    console.error("Fehler bei Guest Login:", error);
+    alert("Guest Login fehlgeschlagen: " + error.message);
+  }
 }
 
 
