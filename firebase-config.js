@@ -25,10 +25,12 @@ const database = firebase.database();
  */
 async function setItem(key, value) {
   try {
+    console.log("Firebase: Speichern von", key, "mit Wert:", value);
     await database.ref(key).set(value);
+    console.log("Firebase: Erfolgreich gespeichert!", key);
     return { success: true };
   } catch (error) {
-    console.error("Fehler beim Speichern:", error);
+    console.error("Fehler beim Speichern in Firebase:", error);
     throw error;
   }
 }

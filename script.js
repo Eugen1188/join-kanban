@@ -254,6 +254,7 @@ function renderLogedUser() {
  */
 async function logInAsGuest() {
   try {
+    console.log("logInAsGuest() gestartet");
     guestArray = {
       name: "Guest",
       email: "guest@guest.org",
@@ -264,6 +265,7 @@ async function logInAsGuest() {
     console.log("Speichere Gast-Benutzer:", logedInUser);
     await setItem("logedInUser", logedInUser);
     console.log("Gast-Benutzer erfolgreich gespeichert");
+    console.log("Navigiere zu:", BASE_URL + "summary.html");
     window.location.href = BASE_URL + "summary.html";
   } catch (error) {
     console.error("Fehler bei Guest Login:", error);
