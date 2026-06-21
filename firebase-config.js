@@ -1,12 +1,12 @@
 // Firebase Konfiguration
 const firebaseConfig = {
-  apiKey: "AIzaSyBhU93iGDwSWk1f4stVomEiNj3dRuyle_c",
-  authDomain: "join-kanban-9081i.firebaseapp.com",
-  databaseURL: "https://join-kanban-9081i-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "join-kanban-9081i",
-  storageBucket: "join-kanban-9081i.firebasestorage.app",
-  messagingSenderId: "6164616936j2",
-  appId: "1:6164616936j2:web:a8b02f982f3efd5450125d"
+  apiKey: "AIzaSyBNu91GDw5WRlf4stVemEiNj3dfBuyle_c",
+  authDomain: "join-kanban-90811.firebaseapp.com",
+  databaseURL: "https://join-kanban-90811-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "join-kanban-90811",
+  storageBucket: "join-kanban-90811.firebasestorage.app",
+  messagingSenderId: "616401693672",
+  appId: "1:616401693672:web:a8b02f982f3efd5450125d"
 };
 
 console.log("Firebase Config geladen", firebaseConfig);
