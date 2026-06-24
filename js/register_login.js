@@ -1,5 +1,3 @@
-let logedInUser = [];
-
 /**
  * Initialisiert registrierte Kontakte
  * Überwacht den Auth-Status und lädt Benutzerdaten
@@ -89,7 +87,9 @@ async function logIn(event) {
     localStorage.setItem("logedInUser", JSON.stringify(logedInUser));
     localStorage.removeItem("isGuest");
 
-    if (document.getElementById("rememberMe") && document.getElementById("rememberMe").checked) {
+    const rememberMe = document.getElementById("rememberMe");
+
+    if (rememberMe && rememberMe.checked) {
       localStorage.setItem("rememberEmail", email);
     }
 
@@ -101,7 +101,11 @@ async function logIn(event) {
     passwordInput.value = "";
 
     if (inputRequiredElement) {
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
+      if (
+        error.code === "auth/user-not-found" ||
+        error.code === "auth/wrong-password" ||
+        error.code === "auth/invalid-credential"
+      ) {
         inputRequiredElement.textContent = "* Wrong Email or Password";
       } else if (error.code === "auth/too-many-requests") {
         inputRequiredElement.textContent = "* Zu viele Anmeldeversuche. Bitte später versuchen.";
