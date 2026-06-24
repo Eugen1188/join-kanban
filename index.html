@@ -4,25 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Join</title>
-    <link rel="icon" type="image/x-icon" href="./assets/img/join_logo.png">
+
+    <link rel="icon" type="image/x-icon" href="./assets/img/join_logo.png" />
     <link rel="stylesheet" href="./styles/font.css" />
     <link rel="stylesheet" href="./styles/animation.css" />
     <link rel="stylesheet" href="./styles/style.css" />
     <link rel="stylesheet" href="./styles/index-responsive.css" />
     <link rel="stylesheet" href="./styles/index.css" />
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <!-- Project Scripts -->
     <script src="./firebase-config.js"></script>
     <script src="./script.js"></script>
-    <script src="./js/contactsHtmlTemplate.js"></script>
-    <script src="./js/contacts.js"></script>
     <script src="./js/register_login.js"></script>
-    <script src="./js/summary.js"></script>
   </head>
 
-  <body onload="initRegisteredContacts(), loadRememberMe()">
+  <body onload="initRegisteredContacts(); loadRememberMe();">
     <div class="animation-main-cont change-height" id="animation-logo">
       <svg class="animation-img" width="101" height="122" viewBox="0 0 101 122" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path class="change-logo-color" d="M71.6721 0H49.5143V25.4923H71.6721V0Z" fill="white" />
@@ -49,10 +50,12 @@
         </div>
 
         <div class="form-cont">
-          <form onsubmit="logIn()" ; return false>
+          <form onsubmit="logIn(event); return false;">
             <input autocomplete="off" class="input-field" type="email" name="email" id="email" placeholder="Email" required />
             <input autocomplete="off" class="input-field" type="password" name="password" id="password" placeholder="Password" required />
+
             <span id="inputRequiredLogIn" class="d-none">* Wrong Email or Password</span>
+
             <div class="checkbox-cont">
               <label class="checkboxlabel">
                 <span>Remember me</span>
@@ -63,7 +66,7 @@
 
             <div class="login-buttons-cont">
               <button type="submit" class="text-decoration-none loginbutton">Log in</button>
-              <button type="button" class="text-decoration-none loginguestbutton" onclick="logInAsGuest(); return false;">Guest Log in</button>
+              <button type="button" class="text-decoration-none loginguestbutton" onclick="logInAsGuest(event); return false;">Guest Log in</button>
             </div>
           </form>
         </div>
@@ -80,22 +83,24 @@
         </div>
 
         <div class="form-cont">
-          <form onchange="showRegisterButton()" onsubmit="saveNewUserData(), passOutline(); return false">
-            <input autocomplete="off" class="input-field" type="text" name="" id="name-reg" placeholder="Name" required />
-            <input autocomplete="off" class="input-field" type="email" name="" id="email-reg" placeholder="Email" required />
-            <input autocomplete="off" class="input-field" type="password" name="" id="password-reg" placeholder="Password" required />
-            <input autocomplete="off" class="input-field" type="password" name="" id="rep-password-reg" placeholder="Confirm Password" required />
+          <form onchange="showRegisterButton()" onsubmit="saveNewUserData(event); return false;">
+            <input autocomplete="off" class="input-field" type="text" id="name-reg" placeholder="Name" required />
+            <input autocomplete="off" class="input-field" type="email" id="email-reg" placeholder="Email" required />
+            <input autocomplete="off" class="input-field" type="password" id="password-reg" placeholder="Password" required />
+            <input autocomplete="off" class="input-field" type="password" id="rep-password-reg" placeholder="Confirm Password" required />
+
             <span id="inputRequired" class="d-none">* Passwords don't match</span>
+
             <div class="checkbox-cont">
               <label class="checkboxlabel">
-                <span>I accept the <a class="privacy-policy-span" href="privacy-policy.html" onclick="showInfoForUnloggedUser()">Privacy policy</a> </span>
+                <span>I accept the <a class="privacy-policy-span" href="privacy-policy.html" onclick="showInfoForUnloggedUser()">Privacy policy</a></span>
                 <input autocomplete="off" class="logincheckbox" type="checkbox" id="registerCheckbox" required />
                 <span class="checkmark"></span>
               </label>
             </div>
 
             <div class="login-buttons-cont">
-              <button class="text-decoration-none loginbutton" id="registerBtn" disabled>Sign up</button>
+              <button type="submit" class="text-decoration-none loginbutton" id="registerBtn" disabled>Sign up</button>
             </div>
           </form>
         </div>
@@ -108,7 +113,6 @@
     </div>
 
     <div class="feedback-black-cont" id="feedback-black-container"></div>
-
     <div class="feedback-cont" id="feedback-registration">You Signed Up successfully</div>
   </body>
 </html>
