@@ -5,141 +5,268 @@ let id = 11;
 let lastActivePerson;
 
 
-async function initContacts() {
-  contacts = await getItemContacts("contacts");
-  id = await getItemContacts("id");
-  logedInUser = await getItemContacts("logedInUser");
-  setLogedInUserInContactsArray()
-  if (logedInUser.length == 0) {
-    navigateToIndex();
-  }
-  renderContacts();
-  renderLogedUser()
+/**
+ * Wartet auf Firebase Auth und gibt den aktuellen User zurück.
+ *
+ * @returns {Promise<Object|null>}
+ */
+function waitForContactsAuthState() {
+  return new Promise((resolve) => {
+    if (typeof firebase === "undefined" || !firebase.auth) {
+      console.warn("Firebase Auth ist nicht verfügbar.");
+      resolve(null);
+      return;
+    }
+
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (typeof unsubscribe === "function") {
+        unsubscribe();
+      }
+
+      currentUser = user || null;
+      resolve(user || null);
+    });
+  });
 }
 
 
 /**
- *Updates the data of a person, only updates the data whose field is also filled in
- * @param {number} id - is needed to find the person to be updated
- * @returns {void} - returns nothing
- * */
+ * Baut logedInUser aus Firebase Auth und optionalem Profil auf.
+ *
+ * @param {Object} user
+ * @returns {Promise<void>}
+ */
+async function prepareContactsLoggedInUser(user) {
+  let userProfile = {};
+
+  try {
+    if (typeof getUserProfile === "function") {
+      userProfile = await getUserProfile();
+
+      if (!userProfile || Array.isArray(userProfile)) {
+        userProfile = {};
+      }
+    }
+  } catch (error) {
+    console.warn("User-Profil konnte nicht geladen werden. Nutze Fallback:", error);
+    userProfile = {};
+  }
+
+  logedInUser = [
+    {
+      uid: user.uid,
+      id: user.uid,
+      email: user.email || userProfile.email || "guest@guest.org",
+      name: userProfile.name || (user.isAnonymous ? "Guest" : ""),
+      lastname: userProfile.lastname || "",
+      initials: userProfile.initials || (user.isAnonymous ? "G" : ""),
+      phone: userProfile.phone || "",
+      isGuest: user.isAnonymous,
+      circleColor: userProfile.circleColor || "user-color-one",
+    },
+  ];
+
+  localStorage.setItem("currentUserId", user.uid);
+  localStorage.setItem("logedInUser", JSON.stringify(logedInUser));
+}
+
+
+/**
+ * Lädt Kontakte für den aktuellen Firebase User.
+ *
+ * @returns {Promise<void>}
+ */
+async function loadContactsData() {
+  try {
+    if (currentUser && typeof getUserData === "function") {
+      contacts = await getUserData("contacts");
+      id = await getUserData("contactsNextId");
+    } else {
+      contacts = await getItemContacts("contacts");
+      id = await getItemContacts("id");
+    }
+
+    if (!Array.isArray(contacts)) {
+      contacts = [];
+    }
+
+    if (!id || Array.isArray(id) || typeof id !== "number") {
+      id = 11;
+    }
+  } catch (error) {
+    console.error("Kontakte konnten nicht geladen werden:", error);
+    contacts = [];
+    id = 11;
+  }
+}
+
+
+/**
+ * Speichert Kontakte für den aktuellen Firebase User.
+ *
+ * @returns {Promise<void>}
+ */
+async function saveContactsData() {
+  if (currentUser && typeof setUserData === "function") {
+    await setUserData("contacts", contacts);
+    await setUserData("contactsNextId", id);
+    return;
+  }
+
+  await setItem("contacts", contacts);
+  await setItem("id", id);
+}
+
+
+async function initContacts() {
+  const user = await waitForContactsAuthState();
+
+  if (!user) {
+    navigateToIndex();
+    return;
+  }
+
+  await prepareContactsLoggedInUser(user);
+  await loadContactsData();
+  await setLogedInUserInContactsArray();
+
+  renderContacts();
+  await renderLogedUser();
+}
+
+
+/**
+ * Updates the data of a person, only updates the data whose field is also filled in
+ *
+ * @param {number|string} userId - is needed to find the person to be updated
+ * @returns {void}
+ */
 async function editContact(userId) {
   const nameValue = document.getElementById("name").value.trim();
   const emailValue = document.getElementById("email").value.trim();
   const phoneValue = document.getElementById("phone").value.trim();
+
   if (nameValue && isValidEmail(emailValue) && phoneValue) {
     let inedxOfContact = contacts.findIndex(contact => contact.id === userId);
+
     if (inedxOfContact != -1) {
-      let editName = nameValue.split(" ")
+      let editName = nameValue.split(" ");
       contacts[inedxOfContact].name = editName[0];
       contacts[inedxOfContact].lastname = editName.slice(1).join(" ");
       contacts[inedxOfContact].email = emailValue;
       contacts[inedxOfContact].phone = formatPhoneNumber(phoneValue);
       contacts[inedxOfContact].initials = editName[0].charAt(0).toUpperCase() + editName.slice(1).join(" ").charAt(0).toUpperCase();
-      renderContacts()
-      renderSingleContactOverview(inedxOfContact)
-      checkIfEditedDataIsLoggInUser(userId, inedxOfContact)
-      setItem("contacts", contacts)
+
+      renderContacts();
+      renderSingleContactOverview(inedxOfContact);
+      await checkIfEditedDataIsLoggInUser(userId, inedxOfContact);
+      await saveContactsData();
     }
-  } else {
-    return
   }
 }
 
 
 /**
  * Checks if the edited data belongs to the logged-in user and updates the user's information accordingly.
- * @param {number} userId - The ID of the logged-in user.
- * @param {number} indexOfContact - The index of the contact being edited in the contacts array.
- * @returns {Promise<void>} - A promise that resolves when the user's information is updated.
+ *
+ * @param {number|string} userId - The ID of the logged-in user.
+ * @param {number} inedOfContact - The index of the contact being edited in the contacts array.
+ * @returns {Promise<void>}
  */
 async function checkIfEditedDataIsLoggInUser(userId, inedOfContact) {
+  if (!Array.isArray(logedInUser) || !logedInUser[0]) {
+    return;
+  }
+
   if (logedInUser[0].id == userId) {
     logedInUser[0].name = contacts[inedOfContact].name;
     logedInUser[0].lastname = contacts[inedOfContact].lastname;
     logedInUser[0].email = contacts[inedOfContact].email;
     logedInUser[0].initials = contacts[inedOfContact].initials;
     logedInUser[0].phone = contacts[inedOfContact].phone;
-    await setItem("logedInUser", logedInUser)
-    updateLogedInUserInUserDataArray()
-    renderLogedUser()
-  }
-}
 
+    localStorage.setItem("logedInUser", JSON.stringify(logedInUser));
 
-/** deletes a contact from the contact list
- * @param {number} id - is required to find the desired user
- */
-async function deleteContact(id) {
-  const disabledClick = document.getElementById("single-contact-delete");
-  const index = contacts.findIndex(contact => contact.id === id);
-  if (logedInUser[0].id == contacts[index].id) {
-    renderSlideInMsg("contact-success", "You can't delete yourself");
-    disabledClick.style.pointerEvents = "none";
-    return;
-  }
-  if (!logedInUser[0].id) {
-    renderSlideInMsg("contact-success", "Guest can't delete a user");
-    disabledClick.style.pointerEvents = "none";
-    return;
-  }
-  if (index !== -1 && logedInUser[0].id != contacts[index].id) {
-    contacts.splice(index, 1);
-    renderContacts();
-    document.getElementById("single-contact-data-container").innerHTML = "";
-    lastActivePerson = 0;
-    renderContactListAfterDeleteMobile()
-    setItem("contacts", contacts);
-  }
+    if (typeof saveUserProfile === "function") {
+      await saveUserProfile({
+        name: logedInUser[0].name,
+        lastname: logedInUser[0].lastname,
+        email: logedInUser[0].email,
+        initials: logedInUser[0].initials,
+        phone: logedInUser[0].phone,
+        circleColor: logedInUser[0].circleColor || "user-color-one",
+      });
+    }
 
+    updateLogedInUserInUserDataArray();
+    await renderLogedUser();
+  }
 }
 
 
 /**
- * Saves the user in userData array and
- * sets the id to the next number
- * @returns {void} - returns nothing
+ * Deletes a contact from the contact list.
+ *
+ * @param {number|string} contactId - is required to find the desired user
  */
-async function saveNewUserData() {
-  id = await getItemContacts("id");
-  const name = document.getElementById("name-reg").value.trim();
-  const helper = name.split(" ");
-  const email = document.getElementById("email-reg").value.trim();
-  const password = document.getElementById("password-reg").value.trim();
-  const passwordRep = document.getElementById("rep-password-reg").value.trim();
-  if (checkEmailAddress(email, userData) || password != passwordRep) {
+async function deleteContact(contactId) {
+  const disabledClick = document.getElementById("single-contact-delete");
+  const index = contacts.findIndex(contact => contact.id === contactId);
+
+  if (index === -1 || !Array.isArray(logedInUser) || !logedInUser[0]) {
     return;
   }
-  userData.push({
-    id: id,
-    name: firstCharToUpperCase(helper[0]),
-    lastname: helper.length === 1 ? "" : firstCharToUpperCase(helper[helper.length - 1]),
-    email: email,
-    password: password,
-    initials: helper.length === 1 ? helper[0].charAt(0).toUpperCase() : helper[0].charAt(0).toUpperCase() + helper[1].charAt(0).toUpperCase(),
-    circleColor: getRandomColor(),
-    phone: "No data stored",
-  });
-  id++;
-  setItem("id", id);
-  setItem("userData", userData);
-  if (window.location.href == 'https://join-63.developerakademie.net/index.html' || 'http://127.0.0.1:5500/index.html') {
-    showRegistrationAnimation();
+
+  if (logedInUser[0].id == contacts[index].id) {
+    renderSlideInMsg("contact-success", "You can't delete yourself");
+
+    if (disabledClick) {
+      disabledClick.style.pointerEvents = "none";
+    }
+
+    return;
   }
+
+  if (logedInUser[0].isGuest) {
+    renderSlideInMsg("contact-success", "Guest can't delete a user");
+
+    if (disabledClick) {
+      disabledClick.style.pointerEvents = "none";
+    }
+
+    return;
+  }
+
+  contacts.splice(index, 1);
+  renderContacts();
+
+  const singleContactDataContainer = document.getElementById("single-contact-data-container");
+
+  if (singleContactDataContainer) {
+    singleContactDataContainer.innerHTML = "";
+  }
+
+  lastActivePerson = 0;
+  renderContactListAfterDeleteMobile();
+  await saveContactsData();
 }
 
 
-/** adds a new contact to Contactlist and sets the id to the next number
- * @returns {void} - returns nothing
+/**
+ * Adds a new contact to Contactlist and sets the id to the next number.
+ *
+ * @returns {void}
  */
 async function addNewContactToContactlist() {
   let name = document.getElementById("name").value.toLowerCase().trim();
   let helper = name.split(" ");
   let email = document.getElementById("email").value.trim();
   let phone = document.getElementById("phone").value.trim();
+
   if (checkEmailAddress(email, contacts) || !isValidEmail(email)) {
     return;
   }
+
   if (name && email && phone) {
     contacts.push({
       id: id,
@@ -147,21 +274,23 @@ async function addNewContactToContactlist() {
       lastname: helper.length === 1 ? "" : firstCharToUpperCase(helper[helper.length - 1]),
       email: email.toLowerCase(),
       phone: formatPhoneNumber(phone),
-      initials:
-        helper.length === 1 ? helper[0].charAt(0).toUpperCase() : helper[0].charAt(0).toUpperCase() + helper[1].charAt(0).toUpperCase(),
+      initials: helper.length === 1 ? helper[0].charAt(0).toUpperCase() : helper[0].charAt(0).toUpperCase() + helper[1].charAt(0).toUpperCase(),
       circleColor: getRandomColor(),
     });
+
     renderContacts();
     renderCard("edit-card", "");
     renderAddContactSuccess(id, "Contact succesfully created ");
+
     id++;
-    setItem("id", id);
-    setItem("contacts", contacts);
+    await saveContactsData();
   }
 }
 
 
-/** sets the item in the local storage  */
+/**
+ * Sorts the contacts array by username.
+ */
 function sortArrayByUserName() {
   sortedUsers = contacts.sort((a, b) => {
     const result = a.name.localeCompare(b.name);
@@ -171,16 +300,16 @@ function sortArrayByUserName() {
 
 
 /**
- * /**
- *Compares the email in the contacts array, if the email exists it returns a value,
-  which can be intercepted in an if query to jump out of the function
+ * Compares the email in the contacts array.
+ *
  * @param {string} email - is required to compare the emails
  * @param {array} array - which array should be searched for the emails
- * @returns {string} - returns a string if the email is already in use
+ * @returns {string|undefined}
  */
 function checkEmailAddress(email, array) {
   for (let i = 0; i < array.length; i++) {
     const existingEmail = array[i].email;
+
     if (existingEmail === email) {
       return "This email is already in use";
     }
@@ -189,46 +318,66 @@ function checkEmailAddress(email, array) {
 
 
 /**
- *capitalizes the first letter
+ * Capitalizes the first letter.
+ *
  * @param {String} name - User name
- * @returns {String} - returns the name in upper case
+ * @returns {String}
  */
 function firstCharToUpperCase(name) {
-  let toUpper = name.charAt(0).toUpperCase() + name.substring(1);
-  return toUpper
+  if (!name) {
+    return "";
+  }
+
+  return name.charAt(0).toUpperCase() + name.substring(1);
 }
 
 
 /**
- *Sets all letters to lower case
+ * Sets all letters to lower case.
+ *
  * @param {String} name - User name
- * @returns {String}  - returns the name in lower case
+ * @returns {String}
  */
 function firstCharToLowerCase(name) {
-  let toLower = name.toLowerCase()
-  return toLower
+  if (!name) {
+    return "";
+  }
+
+  return name.toLowerCase();
 }
 
 
 /**
- * Sets the clicked card to active and colors it, if another card is clicked, the last card is reset to normal state
- * @param {Number} id - the id of the clicked card
+ * Sets the clicked card to active and colors it.
+ *
+ * @param {Number} contactId - the id of the clicked card
  */
-function setPersonToActive(id) {
-  let activPerson = document.getElementById(`contact-data-${id}`)
-  activPerson.classList.add("pointerEvents")
-  if (lastActivePerson >= 0) {
-    let lastPersconActive = document.getElementById(`contact-data-${lastActivePerson}`)
-    lastPersconActive.classList.remove("set-contact-to-active")
-    lastPersconActive.classList.remove("pointerEvents")
+function setPersonToActive(contactId) {
+  let activPerson = document.getElementById(`contact-data-${contactId}`);
+
+  if (!activPerson) {
+    return;
   }
-  activPerson.classList.add("set-contact-to-active")
-  lastActivePerson = id
+
+  activPerson.classList.add("pointerEvents");
+
+  if (lastActivePerson >= 0) {
+    let lastPersconActive = document.getElementById(`contact-data-${lastActivePerson}`);
+
+    if (lastPersconActive) {
+      lastPersconActive.classList.remove("set-contact-to-active");
+      lastPersconActive.classList.remove("pointerEvents");
+    }
+  }
+
+  activPerson.classList.add("set-contact-to-active");
+  lastActivePerson = contactId;
 }
 
 
 function getRandomColor() {
   let number = Math.floor(Math.random() * 15) + 1;
+
   switch (number) {
     case 1:
       return "user-color-one";
@@ -267,82 +416,55 @@ function getRandomColor() {
 
 
 /**
- * Sets the first letter of the name to upper case
- * @param {String} name - User name
- * @returns {void} - returns nothing
- */
-function firstCharToUpperCase(name) {
-  let toUpper = name.charAt(0).toUpperCase() + name.substring(1);
-  return toUpper;
-}
-
-
-/**
- * Sets all letters to lower case
- * @param {String} name - User name
- * @returns {void} - returns nothing
- */
-function firstCharToLowerCase(name) {
-  let toLowerCase = name.toLowerCase();
-  return toLowerCase;
-}
-
-
-/**
- * Sets the clicked card to active and colors it, if another card is clicked, the last card is reset to normal state
- * @param {Number} id - the id of the clicked card
- */
-function setPersonToActive(id) {
-  let activPerson = document.getElementById(`contact-data-${id}`);
-  activPerson.classList.add("pointerEvents");
-  if (lastActivePerson >= 0) {
-    let lastPersconActive = document.getElementById(
-      `contact-data-${lastActivePerson}`
-    );
-    lastPersconActive.classList.remove("set-contact-to-active");
-    lastPersconActive.classList.remove("pointerEvents");
-  }
-  activPerson.classList.add("set-contact-to-active");
-  lastActivePerson = id;
-}
-
-
-/**
  * Formats a phone number by removing any non-numeric characters and adding a country code if missing.
- * @param {string} phone - The phone number to format.
+ *
+ * @param {string} phoneNumber - The phone number to format.
  * @returns {string} - The formatted phone number.
  */
 function formatPhoneNumber(phoneNumber) {
-  let cleaned = ('' + phoneNumber).replace(/\D/g, '');
+  let cleaned = ("" + phoneNumber).replace(/\D/g, "");
   let match = cleaned.match(/^(\d{1})(\d{4})(\d{3})(\d{2})(\d{1})$/);
+
   if (match) {
-    let countryCode = match[1] === '0' ? '+49' : match[1];
-    return countryCode + ' ' + match[2] + ' ' + match[3] + ' ' + match[4] + ' ' + match[5];
+    let countryCode = match[1] === "0" ? "+49" : match[1];
+    return countryCode + " " + match[2] + " " + match[3] + " " + match[4] + " " + match[5];
   }
+
   return phoneNumber;
 }
 
 
 /**
- *  Clears the form values
+ * Clears the form values.
+ *
  * @param {String} formId - id of the form
  */
 function clearFormValues(formId) {
   const form = document.getElementById(formId);
-  form.reset();
+
+  if (form) {
+    form.reset();
+  }
 }
 
 
 /**
- * Right slide in animation
- * @param {String} id - id of the element
- * @param {HTMLElement} htmlTemplate -  html template
+ * Right slide in animation.
+ *
+ * @param {String} elementId - id of the element
+ * @param {HTMLElement|string} htmlTemplate - html template
  */
-function rightSlideAnimation(id, htmlTemplate) {
-  let element = document.getElementById(id);
+function rightSlideAnimation(elementId, htmlTemplate) {
+  let element = document.getElementById(elementId);
+
+  if (!element) {
+    return;
+  }
+
   element.innerHTML = "";
   element.classList.add("right-slide-animation");
   element.innerHTML += htmlTemplate;
+
   setTimeout(() => {
     element.classList.remove("right-slide-animation");
   }, 450);
@@ -350,13 +472,19 @@ function rightSlideAnimation(id, htmlTemplate) {
 
 
 /**
- *  Right slide out animation
- * @param {Number} id - id of the element
- * @param {Number} setTimeoutValue - time to wait before the animation starts
+ * Right slide out animation.
+ *
+ * @param {String} elementId - id of the element
  */
-function slideBackAnimation(id) {
-  let element = document.getElementById(id);
+function slideBackAnimation(elementId) {
+  let element = document.getElementById(elementId);
+
+  if (!element) {
+    return;
+  }
+
   element.classList.add("slide-back-animation");
+
   setTimeout(() => {
     element.classList.remove("slide-back-animation");
   }, 550);
@@ -370,19 +498,18 @@ function addBtnMobileOrDesktop() {
 
 /**
  * Goes back to the contact list on mobile.
- * Renders the contacts, sets the mobile add button to default,
- * removes the mobile background color from the single user card,
- * and clears the content of the element with the id 'renderOrDelete'.
  */
 const goBackToContactListMobile = () => {
   renderContacts();
-  setMobileAddBtnToDefault()
-  removeMoileBgColorSingleUserCard()
-  let element = document.getElementById('renderOrDelete');
+  setMobileAddBtnToDefault();
+  removeMoileBgColorSingleUserCard();
+
+  let element = document.getElementById("renderOrDelete");
+
   if (element && element.hasChildNodes()) {
-    element.innerHTML = '';
+    element.innerHTML = "";
   }
-}
+};
 
 
 /**
@@ -390,6 +517,11 @@ const goBackToContactListMobile = () => {
  */
 function setMobileAddBtnToDefault() {
   let addOrEddit = document.getElementById("add-or-eddit");
+
+  if (!addOrEddit) {
+    return;
+  }
+
   addOrEddit.innerHTML = "";
   addOrEddit.innerHTML = addNewContactMobileHTML();
 }
@@ -400,20 +532,20 @@ function setMobileAddBtnToDefault() {
  */
 function grayOpasityBackgroundColor() {
   let opasity = document.getElementById("opasity");
-  opasity.classList.add("opasity");
+
+  if (opasity) {
+    opasity.classList.add("opasity");
+  }
 }
 
 
-/**
- * Represents the element with the ID "single-contact-data-container".
- * @type {HTMLElement}
- */
-window.addEventListener('resize', function () {
+window.addEventListener("resize", function () {
   if (window.innerWidth <= 1022) {
-    let checkElement = document.getElementById("single-contact-data-container")
+    let checkElement = document.getElementById("single-contact-data-container");
+
     if (checkElement && checkElement.childNodes.length > 0) {
-      checkElement.innerHTML = '';
-      renderContacts()
+      checkElement.innerHTML = "";
+      renderContacts();
     }
   }
 });
@@ -421,45 +553,76 @@ window.addEventListener('resize', function () {
 
 /**
  * Sets the logged-in user in the contacts array.
- * @returns {Promise<void>} A promise that resolves when the operation is complete.
+ *
+ * @returns {Promise<void>}
  */
 async function setLogedInUserInContactsArray() {
-  // let logedInUser = await getItemContacts("logedInUser");
-  let checkUserId = contacts.findIndex(contact => contact.id === logedInUser[0].id);
-  if (logedInUser.length != "Guest" && !logedInUser[0].id) {
+  if (!Array.isArray(logedInUser) || !logedInUser[0]) {
     return;
   }
+
+  let checkUserId = contacts.findIndex(contact => contact.id === logedInUser[0].id);
+
   if (checkUserId == -1) {
     contacts.push(logedInUser[0]);
-    renderContacts();
-    setItem("contacts", contacts);
+    await saveContactsData();
   }
 }
 
 
 /**
  * Updates the logged-in user in the userData array.
- * @returns {Promise<void>} A promise that resolves when the update is complete.
+ *
+ * @returns {Promise<void>}
  */
 async function updateLogedInUserInUserDataArray() {
-  userData = await getItemContacts("userData");
-  let checkUserId = userData.findIndex(user => user.id === logedInUser[0].id);
-  if (checkUserId != -1) {
-    userData[checkUserId] = logedInUser[0];
-    await setItem("userData", userData);
+  try {
+    if (currentUser && typeof getUserData === "function") {
+      userData = await getUserData("userData");
+    } else {
+      userData = await getItemContacts("userData");
+    }
+
+    if (!Array.isArray(userData)) {
+      userData = [];
+    }
+
+    if (!Array.isArray(logedInUser) || !logedInUser[0]) {
+      return;
+    }
+
+    let checkUserId = userData.findIndex(user => user.id === logedInUser[0].id);
+
+    if (checkUserId != -1) {
+      userData[checkUserId] = logedInUser[0];
+
+      if (currentUser && typeof setUserData === "function") {
+        await setUserData("userData", userData);
+      } else {
+        await setItem("userData", userData);
+      }
+    }
+  } catch (error) {
+    console.warn("userData konnte nicht aktualisiert werden:", error);
   }
 }
 
 
 /**
  * Checks if the input value contains only numbers and optional plus sign.
- * @param {string} id - The ID of the input element.
+ *
+ * @param {string} elementId - The ID of the input element.
  */
-function checkIfOnlyNumbers(id) {
-  const inputElement = document.getElementById(id);
-  inputElement.addEventListener('input', function () {
+function checkIfOnlyNumbers(elementId) {
+  const inputElement = document.getElementById(elementId);
+
+  if (!inputElement) {
+    return;
+  }
+
+  inputElement.addEventListener("input", function () {
     if (!/^\+?\d*$/.test(this.value)) {
-      this.value = this.value.replace(/[^\d+]|(?!^)\+/g, '');
+      this.value = this.value.replace(/[^\d+]|(?!^)\+/g, "");
     }
   });
 }
@@ -469,7 +632,7 @@ function checkIfOnlyNumbers(id) {
  * Checks if the given email is valid.
  *
  * @param {string} email - The email to be validated.
- * @returns {boolean} - True if the email is valid, false otherwise.
+ * @returns {boolean}
  */
 function isValidEmail(email) {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -485,20 +648,30 @@ function disabledBtn() {
   let email = document.getElementById("email").value.trim();
   let phone = document.getElementById("phone").value.trim();
   let disabledBtn = document.getElementById("submitContact");
+
+  if (!disabledBtn) {
+    return;
+  }
+
   if (!name || !email || !phone) {
     disabledBtn.disabled = true;
-    return
+    return;
   }
-  disabledBtn.disabled = false;
 
+  disabledBtn.disabled = false;
 }
+
 
 async function ifEmailIsValisAddorEditContacts(functionName) {
   let email = document.getElementById("email").value.trim();
-  if (await !isValidEmail(email)) {
-    return
-  } else {
-    functionName
-    closeRenderContactCardSlide()
+
+  if (!isValidEmail(email)) {
+    return;
   }
+
+  if (typeof functionName === "function") {
+    await functionName();
+  }
+
+  closeRenderContactCardSlide();
 }
