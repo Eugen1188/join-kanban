@@ -389,7 +389,7 @@ function navigateToIndex() {
 /**
  * render initials of logged user in the user logo
  */
-function renderLogedUser() {
+async function renderLogedUser() {
   let userInitials = document.getElementById("logedUserInitials");
 
   if (!userInitials) {
@@ -398,9 +398,44 @@ function renderLogedUser() {
   }
 
   if (!Array.isArray(logedInUser) || !logedInUser[0]) {
-    console.warn("logedInUser ist leer. Initialen können nicht gerendert werden.");
-    userInitials.innerHTML = "";
-    return;
+    const user = await waitForAuthState();
+
+    if (!user) {
+      console.warn("Kein Firebase User angemeldet. Initialen können nicht gerendert werden.");
+      userInitials.innerHTML = "";
+      return;
+    }
+
+    let profile = {};
+
+    try {
+      if (typeof getUserProfile === "function") {
+        profile = await getUserProfile();
+
+        if (!profile || Array.isArray(profile)) {
+          profile = {};
+        }
+      }
+    } catch (error) {
+      console.warn("Profil konnte nicht geladen werden:", error);
+      profile = {};
+    }
+
+    logedInUser = [
+      {
+        uid: user.uid,
+        id: user.uid,
+        email: user.email || profile.email || "guest@guest.org",
+        name: profile.name || (user.isAnonymous ? "Guest" : ""),
+        lastname: profile.lastname || "",
+        initials: profile.initials || (user.isAnonymous ? "G" : ""),
+        phone: profile.phone || "",
+        isGuest: user.isAnonymous,
+      },
+    ];
+
+    localStorage.setItem("currentUserId", user.uid);
+    localStorage.setItem("logedInUser", JSON.stringify(logedInUser));
   }
 
   userInitials.innerHTML = logedInUser[0].initials || "G";
