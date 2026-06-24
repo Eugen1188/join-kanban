@@ -11,84 +11,139 @@ let currentTaskState = { inProgress: false, awaitFeedback: false, done: false };
  * @param {Event} event - The resize event object.
  * @author Christian Förster
  */
-
 window.addEventListener("resize", function () {
   let header = document.getElementById("main-header");
+
   if (header && header.childNodes.length > 0) {
     header.classList.remove("d-none");
+
     if (window.innerWidth > window.innerHeight && window.innerHeight < 500) {
       createDivOverlayPreventLandscapeMode();
     } else {
       let overlayDiv = document.getElementById("LandscapeModeOverlayDiv");
+
       if (overlayDiv) {
         overlayDiv.remove();
       }
     }
-
   }
 });
 
 
+/**
+ * Wartet zuverlässig auf den Firebase Auth Status.
+ * Wichtig, weil currentUser beim Seitenladen asynchron gesetzt wird.
+ *
+ * @returns {Promise<Object|null>}
+ */
+function waitForAuthState() {
+  return new Promise((resolve) => {
+    if (typeof firebase === "undefined" || !firebase.auth) {
+      console.warn("Firebase Auth ist nicht verfügbar.");
+      resolve(null);
+      return;
+    }
+
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (typeof unsubscribe === "function") {
+        unsubscribe();
+      }
+
+      currentUser = user || null;
+      resolve(user || null);
+    });
+  });
+}
+
+
+/**
+ * Erstellt ein logedInUser-kompatibles Objekt aus einem Firebase User.
+ *
+ * @param {Object} user - Firebase User
+ * @param {Object} profile - optionale Profildaten
+ * @returns {Object}
+ */
+function createLoggedInUserObject(user, profile = {}) {
+  const isGuest = user && user.isAnonymous;
+
+  return {
+    uid: user.uid,
+    id: user.uid,
+    email: user.email || profile.email || "guest@guest.org",
+    name: profile.name || (isGuest ? "Guest" : ""),
+    lastname: profile.lastname || "",
+    initials: profile.initials || (isGuest ? "G" : ""),
+    phone: profile.phone || "",
+    isGuest: isGuest,
+  };
+}
+
+
+/**
+ * Initialisiert die Login-Prüfung auf geschützten Seiten.
+ */
 async function initDisclaimer() {
-  // Warte bis currentUser initialisiert ist
-  let retries = 0;
-  const maxRetries = 30;
-  
-  while (currentUser === undefined && retries < maxRetries) {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    retries++;
+  const user = await waitForAuthState();
+
+  if (!user) {
+    localStorage.removeItem("currentUserId");
+    localStorage.removeItem("logedInUser");
+    navigateToIndex();
+    return;
   }
-  
-  // Prüfe ob Benutzer angemeldet ist
-  if (!currentUser) {
-    // Prüfe localStorage für alte Sessions
-    const storedUser = localStorage.getItem('logedInUser');
-    if (!storedUser) {
-      navigateToIndex();
-    } else {
-      try {
-        logedInUser = JSON.parse(storedUser);
-      } catch (e) {
-        navigateToIndex();
+
+  try {
+    let userProfile = {};
+
+    if (typeof getUserProfile === "function") {
+      userProfile = await getUserProfile();
+
+      if (!userProfile || Array.isArray(userProfile)) {
+        userProfile = {};
       }
     }
-  } else {
-    // Lade logedInUser aus Firebase
-    const userProfile = await getUserProfile();
-    logedInUser = [{
-      uid: currentUser.uid,
-      email: currentUser.email,
-      name: userProfile.name || '',
-      lastname: userProfile.lastname || '',
-      initials: userProfile.initials || '',
-      phone: userProfile.phone || '',
-      id: currentUser.uid
-    }];
-    localStorage.setItem('logedInUser', JSON.stringify(logedInUser));
+
+    logedInUser = [createLoggedInUserObject(user, userProfile)];
+
+    localStorage.setItem("currentUserId", user.uid);
+    localStorage.setItem("logedInUser", JSON.stringify(logedInUser));
+  } catch (error) {
+    console.warn("Benutzerprofil konnte nicht geladen werden, nutze Fallback:", error);
+
+    logedInUser = [createLoggedInUserObject(user)];
+
+    localStorage.setItem("currentUserId", user.uid);
+    localStorage.setItem("logedInUser", JSON.stringify(logedInUser));
   }
 }
+
+
 /**
  * Creates a div overlay to prevent landscape mode, hiding the main header,
  * and updates the overlay content if the overlay already exists.
  * @function createDivOverlayPreventLandscapeMode()
  * @author Christian Förster
  */
-
 function createDivOverlayPreventLandscapeMode() {
   let overlayDiv = document.getElementById("LandscapeModeOverlayDiv");
   let header = document.getElementById("main-header");
+
+  if (!header) {
+    return;
+  }
+
   if (!overlayDiv) {
     header.classList.add("d-none");
     overlayDiv = document.createElement("div");
     overlayDiv.id = "LandscapeModeOverlayDiv";
     overlayDiv.innerHTML = createOverlayContentHTML();
     document.body.appendChild(overlayDiv);
-    // verhindert das nach jedem aufruf ein <div></div> verbleibt
   } else {
     let newOverlayContentHTML = createOverlayContentHTML();
     overlayDiv.innerHTML = newOverlayContentHTML;
   }
 }
+
 
 /**
  * Creates HTML content for an overlay prompting the user to turn their device.
@@ -96,7 +151,6 @@ function createDivOverlayPreventLandscapeMode() {
  * @returns {string} HTML content for the overlay.
  * @author Christian Förster
  */
-
 function createOverlayContentHTML() {
   const html = `
       <div class="turn-device-conatainer">
@@ -104,7 +158,8 @@ function createOverlayContentHTML() {
           <h3> Please turn your Device</h3>
         </div>
          <div class="turn-device-svg-container">
-         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+         <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" 
+         xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
          viewBox="0 0 32 32" xml:space="preserve">
       <style type="text/css">
         .st0{fill:none;}
@@ -119,10 +174,13 @@ function createOverlayContentHTML() {
          </div>
       </div>
   `;
+
   return html;
 }
 
+
 // setItem und getItemContacts werden jetzt von firebase-config.js bereitgestellt
+
 
 /**
  * Asynchronously retrieves and parses the task data from storage to populate the tasks array.
@@ -131,15 +189,18 @@ function createOverlayContentHTML() {
  * @function getAllTasksData
  * @author Kevin Müller (aktualisiert für Firebase)
  */
-
 async function getAllTasksData() {
   try {
-    if (currentUser) {
-      // Lade Aufgaben des aktuellen Benutzers
+    const user = currentUser || await waitForAuthState();
+
+    if (user) {
       allTasks = await getUserData("tasks");
     } else {
-      // Fallback auf alte Methode wenn noch nicht angemeldet
       allTasks = await getItemContacts("test_board");
+    }
+
+    if (!Array.isArray(allTasks)) {
+      allTasks = [];
     }
   } catch (error) {
     console.error("Fehler beim Laden der Tasks:", error);
@@ -155,9 +216,18 @@ function regNewUser() {
   let loginmenu = document.getElementById("login-menu");
   let regmenu = document.getElementById("reg-user-menu");
   let signUpButton = document.getElementById("signup-cont");
-  signUpButton.classList.add("d-none");
-  loginmenu.classList.add("d-none");
-  regmenu.classList.remove("d-none");
+
+  if (signUpButton) {
+    signUpButton.classList.add("d-none");
+  }
+
+  if (loginmenu) {
+    loginmenu.classList.add("d-none");
+  }
+
+  if (regmenu) {
+    regmenu.classList.remove("d-none");
+  }
 }
 
 
@@ -168,9 +238,18 @@ function closeRegMenu() {
   let loginmenu = document.getElementById("login-menu");
   let regmenu = document.getElementById("reg-user-menu");
   let signUpButton = document.getElementById("signup-cont");
-  loginmenu.classList.remove("d-none");
-  regmenu.classList.add("d-none");
-  signUpButton.classList.remove("d-none");
+
+  if (loginmenu) {
+    loginmenu.classList.remove("d-none");
+  }
+
+  if (regmenu) {
+    regmenu.classList.add("d-none");
+  }
+
+  if (signUpButton) {
+    signUpButton.classList.remove("d-none");
+  }
 }
 
 
@@ -179,6 +258,11 @@ function closeRegMenu() {
  */
 function openNavMenu() {
   let menu = document.getElementById("logOutMenu");
+
+  if (!menu) {
+    return;
+  }
+
   if (menu.style.display === "flex") {
     if (window.innerWidth < 660) {
       menu.classList.add("logout-menu-animation-off");
@@ -187,13 +271,16 @@ function openNavMenu() {
       menu.classList.remove("logout-menu-animation-off");
       menu.classList.remove("logout-menu-animation-on");
     }
+
     document.body.removeEventListener("click", closeMenuOutside);
+
     setTimeout(() => {
       menu.style.display = "none";
     }, 100);
   } else {
     menu.style.display = "flex";
     document.body.addEventListener("click", closeMenuOutside);
+
     if (window.innerWidth < 660) {
       menu.classList.add("logout-menu-animation-on");
       menu.classList.remove("logout-menu-animation-off");
@@ -206,8 +293,7 @@ function openNavMenu() {
 
 
 /**
- * 
- * @param {event} event 
+ * @param {event} event
  * To prevent a click event from propagating to the body
  */
 function preventClose(event) {
@@ -216,103 +302,163 @@ function preventClose(event) {
 
 
 /**
- * 
- * @param {MouseEvent} event 
+ * @param {MouseEvent} event
  * clouse the menu on a click outside
  */
 function closeMenuOutside(event) {
   var menu = document.getElementById("logOutMenu");
+
+  if (!menu) {
+    return;
+  }
+
   if (menu.style.display === "flex" && event.target !== menu && !menu.contains(event.target)) {
     document.body.removeEventListener("click", closeMenuOutside);
+
     if (window.innerWidth < 660) {
       menu.classList.add("logout-menu-animation-off");
+
       setTimeout(() => {
         menu.style.display = "none";
       }, 100);
     }
+
     setTimeout(() => {
       menu.style.display = "none";
     }, 100);
   }
 }
 
+
 function includeHTML() {
   var z, i, elmnt, file, xhttp;
-  /* Loop through a collection of all HTML elements: */
+
   z = document.getElementsByTagName("*");
+
   for (i = 0; i < z.length; i++) {
     elmnt = z[i];
-    /*search for elements with a certain atrribute:*/
     file = elmnt.getAttribute("w3-include-html");
+
     if (file) {
-      /* Make an HTTP request using the attribute value as the file name: */
       xhttp = new XMLHttpRequest();
+
       xhttp.onreadystatechange = function () {
         if (this.readyState == 4) {
           if (this.status == 200) {
             elmnt.innerHTML = this.responseText;
           }
+
           if (this.status == 404) {
             elmnt.innerHTML = "Page not found.";
           }
-          /* Remove the attribute, and call this function once more: */
+
           elmnt.removeAttribute("w3-include-html");
           includeHTML();
         }
       };
+
       xhttp.open("GET", file, true);
       xhttp.send();
-      /* Exit the function: */
+
       return;
     }
   }
 }
 
+
 function navigateToBoard() {
   window.location.href = BASE_URL + "board.html";
 }
+
 
 function navigateToHelp() {
   window.location.href = BASE_URL + "help.html";
 }
 
+
 function navigateToAddTask() {
   window.location.href = BASE_URL + "add-task.html";
 }
 
+
 function navigateToIndex() {
   window.location.href = BASE_URL + "index.html";
 }
+
 
 /**
  * render initials of logged user in the user logo
  */
 function renderLogedUser() {
   let userInitials = document.getElementById("logedUserInitials");
-  userInitials.innerHTML = logedInUser[0].initials;
+
+  if (!userInitials) {
+    console.warn("Element #logedUserInitials wurde nicht gefunden.");
+    return;
+  }
+
+  if (!Array.isArray(logedInUser) || !logedInUser[0]) {
+    console.warn("logedInUser ist leer. Initialen können nicht gerendert werden.");
+    userInitials.innerHTML = "";
+    return;
+  }
+
+  userInitials.innerHTML = logedInUser[0].initials || "G";
 }
 
 
 /**
- * if push the guest login button, push guestArray in the logedInUser Array 
+ * if push the guest login button, login anonymously with Firebase Auth
  */
 async function logInAsGuest() {
   try {
     console.log("logInAsGuest() gestartet");
-    guestArray = {
-      name: "Guest",
-      email: "guest@guest.org",
-      password: "password",
-      initials: "G",
-    };
-    logedInUser.push(guestArray);
-    console.log("Speichere Gast-Benutzer:", logedInUser);
-    await setItem("logedInUser", logedInUser);
-    console.log("Gast-Benutzer erfolgreich gespeichert");
+
+    if (typeof firebase === "undefined" || !firebase.auth) {
+      throw new Error("Firebase Auth ist nicht verfügbar. Prüfe, ob firebase-auth.js geladen ist.");
+    }
+
+    const userCredential = await firebase.auth().signInAnonymously();
+    const user = userCredential.user;
+
+    console.log("Gast erfolgreich über Firebase Auth angemeldet:", user.uid);
+
+    logedInUser = [
+      {
+        uid: user.uid,
+        id: user.uid,
+        name: "Guest",
+        email: "guest@guest.org",
+        initials: "G",
+        isGuest: true,
+      },
+    ];
+
+    localStorage.setItem("currentUserId", user.uid);
+    localStorage.setItem("logedInUser", JSON.stringify(logedInUser));
+
+    if (typeof setUserData === "function") {
+      await setUserData("profile", {
+        uid: user.uid,
+        id: user.uid,
+        name: "Guest",
+        email: "guest@guest.org",
+        initials: "G",
+        isGuest: true,
+        updatedAt: new Date().getTime(),
+      });
+    }
+
     console.log("Navigiere zu:", BASE_URL + "summary.html");
     window.location.href = BASE_URL + "summary.html";
   } catch (error) {
     console.error("Fehler bei Guest Login:", error);
+
+    if (error.code === "auth/operation-not-allowed") {
+      alert("Guest Login fehlgeschlagen: Anonymous Login ist in Firebase Authentication nicht aktiviert.");
+      return;
+    }
+
     alert("Guest Login fehlgeschlagen: " + error.message);
   }
 }
@@ -322,10 +468,25 @@ async function logInAsGuest() {
  * logout user -> clear the logedInUser Array and locate user the index.html
  */
 async function logOut() {
-  logedInUser = [];
-  await setItem("logedInUser", logedInUser);
-  window.location = BASE_URL + "index.html";
+  try {
+    logedInUser = [];
+
+    localStorage.removeItem("currentUserId");
+    localStorage.removeItem("logedInUser");
+
+    if (typeof firebase !== "undefined" && firebase.auth) {
+      await firebase.auth().signOut();
+    } else if (typeof logoutUser === "function") {
+      await logoutUser();
+    }
+
+    window.location.href = BASE_URL + "index.html";
+  } catch (error) {
+    console.error("Fehler beim Logout:", error);
+    window.location.href = BASE_URL + "index.html";
+  }
 }
+
 
 // getItemContacts wird jetzt von firebase-config.js bereitgestellt
 
@@ -338,7 +499,12 @@ function changeLinkDirection() {
     let privacyPolicy = document.getElementById("privacyPolicyLink");
     let legalNotice = document.getElementById("legalNoticeLink");
 
-    privacyPolicy.href = BASE_URL + "privacy-policy-unloged.html";
-    legalNotice.href = BASE_URL + "legal-notice-unloged.html";
+    if (privacyPolicy) {
+      privacyPolicy.href = BASE_URL + "privacy-policy-unloged.html";
+    }
+
+    if (legalNotice) {
+      legalNotice.href = BASE_URL + "legal-notice-unloged.html";
+    }
   }, 100);
 }
