@@ -1,6 +1,6 @@
 // Firebase Konfiguration
 const firebaseConfig = {
-  apiKey: "AIzaSyBNu91GDw5WRlf4stVemIiNj3dfBuyle_c",
+  apiKey: "AIzaSyBNu91GDw5WRlf4stVemIGnj3dfBuyle_c",
   authDomain: "join-kanban-90811.firebaseapp.com",
   databaseURL: "https://join-kanban-90811-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "join-kanban-90811",
