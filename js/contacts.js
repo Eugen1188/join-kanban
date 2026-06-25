@@ -72,52 +72,60 @@ async function prepareContactsLoggedInUser(user) {
 
 
 /**
- * Lädt Kontakte für den aktuellen Firebase User.
+ * Lädt alle global registrierten Kontakte.
+ * Wichtig: Hier wird bewusst NICHT users/{uid}/contacts geladen,
+ * sondern der globale Pfad contacts.
  *
  * @returns {Promise<void>}
  */
 async function loadContactsData() {
   try {
-    if (currentUser && typeof getUserData === "function") {
-      contacts = await getUserData("contacts");
-      id = await getUserData("contactsNextId");
-    } else {
-      contacts = await getItemContacts("contacts");
-      id = await getItemContacts("id");
-    }
+    const snapshot = await database.ref("contacts").once("value");
+    const data = snapshot.val();
 
-    if (!Array.isArray(contacts)) {
+    if (!data) {
       contacts = [];
+      return;
     }
 
-    if (!id || Array.isArray(id) || typeof id !== "number") {
-      id = 11;
+    if (Array.isArray(data)) {
+      contacts = data.filter(Boolean);
+      return;
     }
+
+    contacts = Object.values(data);
   } catch (error) {
     console.error("Kontakte konnten nicht geladen werden:", error);
     contacts = [];
-    id = 11;
   }
 }
 
 
 /**
- * Speichert Kontakte für den aktuellen Firebase User.
+ * Speichert globale Kontakte.
  *
  * @returns {Promise<void>}
  */
 async function saveContactsData() {
-  if (currentUser && typeof setUserData === "function") {
-    await setUserData("contacts", contacts);
-    await setUserData("contactsNextId", id);
-    return;
-  }
+  try {
+    const contactsObject = {};
 
-  await setItem("contacts", contacts);
-  await setItem("id", id);
+    contacts.forEach((contact) => {
+      if (contact && contact.id) {
+        contactsObject[contact.id] = contact;
+      }
+    });
+
+    await database.ref("contacts").set(contactsObject);
+  } catch (error) {
+    console.error("Kontakte konnten nicht gespeichert werden:", error);
+  }
 }
 
 
+/**
+ * Initialisiert die Kontakte-Seite.
+ */
 async function initContacts() {
   const user = await waitForContactsAuthState();
 
@@ -128,7 +136,6 @@ async function initContacts() {
 
   await prepareContactsLoggedInUser(user);
   await loadContactsData();
-  await setLogedInUserInContactsArray();
 
   renderContacts();
   await renderLogedUser();
@@ -147,19 +154,23 @@ async function editContact(userId) {
   const phoneValue = document.getElementById("phone").value.trim();
 
   if (nameValue && isValidEmail(emailValue) && phoneValue) {
-    let inedxOfContact = contacts.findIndex(contact => contact.id === userId);
+    let indexOfContact = contacts.findIndex(contact => contact.id === userId);
 
-    if (inedxOfContact != -1) {
+    if (indexOfContact != -1) {
       let editName = nameValue.split(" ");
-      contacts[inedxOfContact].name = editName[0];
-      contacts[inedxOfContact].lastname = editName.slice(1).join(" ");
-      contacts[inedxOfContact].email = emailValue;
-      contacts[inedxOfContact].phone = formatPhoneNumber(phoneValue);
-      contacts[inedxOfContact].initials = editName[0].charAt(0).toUpperCase() + editName.slice(1).join(" ").charAt(0).toUpperCase();
+
+      contacts[indexOfContact].name = firstCharToUpperCase(editName[0]);
+      contacts[indexOfContact].lastname = editName.length > 1 ? firstCharToUpperCase(editName.slice(1).join(" ")) : "";
+      contacts[indexOfContact].email = emailValue;
+      contacts[indexOfContact].phone = formatPhoneNumber(phoneValue);
+      contacts[indexOfContact].initials =
+        editName.length === 1
+          ? editName[0].charAt(0).toUpperCase()
+          : editName[0].charAt(0).toUpperCase() + editName[1].charAt(0).toUpperCase();
 
       renderContacts();
-      renderSingleContactOverview(inedxOfContact);
-      await checkIfEditedDataIsLoggInUser(userId, inedxOfContact);
+      renderSingleContactOverview(indexOfContact);
+      await checkIfEditedDataIsLoggInUser(userId, indexOfContact);
       await saveContactsData();
     }
   }
@@ -170,20 +181,21 @@ async function editContact(userId) {
  * Checks if the edited data belongs to the logged-in user and updates the user's information accordingly.
  *
  * @param {number|string} userId - The ID of the logged-in user.
- * @param {number} inedOfContact - The index of the contact being edited in the contacts array.
+ * @param {number} indexOfContact - The index of the contact being edited in the contacts array.
  * @returns {Promise<void>}
  */
-async function checkIfEditedDataIsLoggInUser(userId, inedOfContact) {
+async function checkIfEditedDataIsLoggInUser(userId, indexOfContact) {
   if (!Array.isArray(logedInUser) || !logedInUser[0]) {
     return;
   }
 
   if (logedInUser[0].id == userId) {
-    logedInUser[0].name = contacts[inedOfContact].name;
-    logedInUser[0].lastname = contacts[inedOfContact].lastname;
-    logedInUser[0].email = contacts[inedOfContact].email;
-    logedInUser[0].initials = contacts[inedOfContact].initials;
-    logedInUser[0].phone = contacts[inedOfContact].phone;
+    logedInUser[0].name = contacts[indexOfContact].name;
+    logedInUser[0].lastname = contacts[indexOfContact].lastname;
+    logedInUser[0].email = contacts[indexOfContact].email;
+    logedInUser[0].initials = contacts[indexOfContact].initials;
+    logedInUser[0].phone = contacts[indexOfContact].phone;
+    logedInUser[0].circleColor = contacts[indexOfContact].circleColor;
 
     localStorage.setItem("logedInUser", JSON.stringify(logedInUser));
 
@@ -198,7 +210,6 @@ async function checkIfEditedDataIsLoggInUser(userId, inedOfContact) {
       });
     }
 
-    updateLogedInUserInUserDataArray();
     await renderLogedUser();
   }
 }
@@ -253,7 +264,7 @@ async function deleteContact(contactId) {
 
 
 /**
- * Adds a new contact to Contactlist and sets the id to the next number.
+ * Adds a new contact to Contactlist and sets the id.
  *
  * @returns {void}
  */
@@ -268,21 +279,25 @@ async function addNewContactToContactlist() {
   }
 
   if (name && email && phone) {
+    const newId = "contact_" + new Date().getTime();
+
     contacts.push({
-      id: id,
+      id: newId,
       name: firstCharToUpperCase(helper[0]),
       lastname: helper.length === 1 ? "" : firstCharToUpperCase(helper[helper.length - 1]),
       email: email.toLowerCase(),
       phone: formatPhoneNumber(phone),
-      initials: helper.length === 1 ? helper[0].charAt(0).toUpperCase() : helper[0].charAt(0).toUpperCase() + helper[1].charAt(0).toUpperCase(),
+      initials:
+        helper.length === 1
+          ? helper[0].charAt(0).toUpperCase()
+          : helper[0].charAt(0).toUpperCase() + helper[1].charAt(0).toUpperCase(),
       circleColor: getRandomColor(),
     });
 
     renderContacts();
     renderCard("edit-card", "");
-    renderAddContactSuccess(id, "Contact succesfully created ");
+    renderAddContactSuccess(newId, "Contact succesfully created ");
 
-    id++;
     await saveContactsData();
   }
 }
@@ -350,7 +365,7 @@ function firstCharToLowerCase(name) {
 /**
  * Sets the clicked card to active and colors it.
  *
- * @param {Number} contactId - the id of the clicked card
+ * @param {Number|string} contactId - the id of the clicked card
  */
 function setPersonToActive(contactId) {
   let activPerson = document.getElementById(`contact-data-${contactId}`);
@@ -361,7 +376,7 @@ function setPersonToActive(contactId) {
 
   activPerson.classList.add("pointerEvents");
 
-  if (lastActivePerson >= 0) {
+  if (lastActivePerson !== undefined && lastActivePerson !== null) {
     let lastPersconActive = document.getElementById(`contact-data-${lastActivePerson}`);
 
     if (lastPersconActive) {
@@ -552,59 +567,22 @@ window.addEventListener("resize", function () {
 
 
 /**
- * Sets the logged-in user in the contacts array.
- *
- * @returns {Promise<void>}
+ * Diese Funktion wird behalten, damit andere Dateien nicht crashen.
+ * Sie fügt aber NICHT mehr automatisch den eingeloggten User in die Kontakte ein.
  */
 async function setLogedInUserInContactsArray() {
-  if (!Array.isArray(logedInUser) || !logedInUser[0]) {
-    return;
-  }
-
-  let checkUserId = contacts.findIndex(contact => contact.id === logedInUser[0].id);
-
-  if (checkUserId == -1) {
-    contacts.push(logedInUser[0]);
-    await saveContactsData();
-  }
+  return;
 }
 
 
 /**
- * Updates the logged-in user in the userData array.
+ * Updates the logged-in user in the old userData array.
+ * Wird aus Kompatibilitätsgründen behalten.
  *
  * @returns {Promise<void>}
  */
 async function updateLogedInUserInUserDataArray() {
-  try {
-    if (currentUser && typeof getUserData === "function") {
-      userData = await getUserData("userData");
-    } else {
-      userData = await getItemContacts("userData");
-    }
-
-    if (!Array.isArray(userData)) {
-      userData = [];
-    }
-
-    if (!Array.isArray(logedInUser) || !logedInUser[0]) {
-      return;
-    }
-
-    let checkUserId = userData.findIndex(user => user.id === logedInUser[0].id);
-
-    if (checkUserId != -1) {
-      userData[checkUserId] = logedInUser[0];
-
-      if (currentUser && typeof setUserData === "function") {
-        await setUserData("userData", userData);
-      } else {
-        await setItem("userData", userData);
-      }
-    }
-  } catch (error) {
-    console.warn("userData konnte nicht aktualisiert werden:", error);
-  }
+  return;
 }
 
 
