@@ -187,6 +187,7 @@ async function getUserProfile() {
 
 /**
  * Registriert einen neuen Benutzer mit Email und Passwort
+ * und speichert ihn zusätzlich global unter /contacts/{uid}.
  *
  * @param {string} email
  * @param {string} password
@@ -221,7 +222,8 @@ async function registerUser(email, password, profileData) {
       email: user.email
     });
 
-    // Globaler Kontakt, damit alle registrierten User in Contacts angezeigt werden
+    // Wichtig für Contacts-Seite und Assigned-to-Liste:
+    // alle registrierten User werden global gespeichert.
     await database.ref(`contacts/${user.uid}`).set(publicContact);
 
     console.log("Benutzer erfolgreich registriert:", user.uid);
