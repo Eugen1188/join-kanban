@@ -28,7 +28,7 @@ async function initRegisteredContacts() {
  * Login mit Firebase Authentication
  * @async
  * @param {Event} event
- * @returns {Promise<void>}
+ * @returns {Promise<boolean>}
  */
 async function logIn(event) {
   if (event) {
@@ -41,7 +41,7 @@ async function logIn(event) {
 
   if (!emailInput || !passwordInput) {
     console.error("Login Inputs wurden nicht gefunden.");
-    return;
+    return false;
   }
 
   const email = emailInput.value.trim();
@@ -52,7 +52,8 @@ async function logIn(event) {
       inputRequiredElement.textContent = "* Please enter email and password";
       inputRequiredElement.classList.remove("d-none");
     }
-    return;
+
+    return false;
   }
 
   try {
@@ -94,6 +95,7 @@ async function logIn(event) {
     }
 
     window.location.href = BASE_URL + "summary.html";
+    return false;
   } catch (error) {
     console.error("Login Fehler:", error);
 
@@ -110,13 +112,14 @@ async function logIn(event) {
       } else if (error.code === "auth/too-many-requests") {
         inputRequiredElement.textContent = "* Zu viele Anmeldeversuche. Bitte später versuchen.";
       } else {
-        inputRequiredElement.textContent = "* Login fehlgeschlagen";
+        inputRequiredElement.textContent = "* Login fehlgeschlagen: " + error.message;
       }
 
       inputRequiredElement.classList.remove("d-none");
     }
 
     passOutlineLogIn();
+    return false;
   }
 }
 
@@ -146,16 +149,32 @@ function saveRememberMe() {
 
 
 /**
+ * Aktiviert den Sign-up-Button nur, wenn alle Felder ausgefüllt sind
+ * und die Checkbox akzeptiert wurde.
  *
- * @returns {boolean}
- * if all input fields are filled and the checkbox are checked, enable the sign up button, otherweise disable
+ * @returns {void}
  */
 function showRegisterButton() {
-  let checkedBox = document.getElementById("registerCheckbox") ? document.getElementById("registerCheckbox").checked : false;
-  let name = document.getElementById("name-reg") ? document.getElementById("name-reg").value : "";
-  let email = document.getElementById("email-reg") ? document.getElementById("email-reg").value : "";
-  let password = document.getElementById("password-reg") ? document.getElementById("password-reg").value : "";
-  let confirmPassword = document.getElementById("rep-password-reg") ? document.getElementById("rep-password-reg").value : "";
+  let checkedBox = document.getElementById("registerCheckbox")
+    ? document.getElementById("registerCheckbox").checked
+    : false;
+
+  let name = document.getElementById("name-reg")
+    ? document.getElementById("name-reg").value
+    : "";
+
+  let email = document.getElementById("email-reg")
+    ? document.getElementById("email-reg").value
+    : "";
+
+  let password = document.getElementById("password-reg")
+    ? document.getElementById("password-reg").value
+    : "";
+
+  let confirmPassword = document.getElementById("rep-password-reg")
+    ? document.getElementById("rep-password-reg").value
+    : "";
+
   let btn = document.getElementById("registerBtn");
 
   if (!btn) {
@@ -210,6 +229,7 @@ function passOutline() {
     repPasswordReg.style.border = "2px solid #ff8190";
 
     if (inputRequired) {
+      inputRequired.textContent = "* Passwords don't match";
       inputRequired.classList.remove("d-none");
     }
   }
@@ -241,10 +261,9 @@ function passOutlineLogIn() {
 
 /**
  * Registriert einen neuen Benutzer mit Firebase Authentication
- * Ersetzt die alte saveNewUserData() Funktion
  * @async
  * @param {Event} event
- * @returns {Promise<void>}
+ * @returns {Promise<boolean>}
  */
 async function saveNewUserData(event) {
   if (event) {
@@ -256,10 +275,11 @@ async function saveNewUserData(event) {
   const passwordElement = document.getElementById("password-reg");
   const passwordConfirmElement = document.getElementById("rep-password-reg");
   const checkboxElement = document.getElementById("registerCheckbox");
+  const inputRequired = document.getElementById("inputRequired");
 
   if (!nameElement || !emailElement || !passwordElement || !passwordConfirmElement || !checkboxElement) {
     console.error("Registrierungsfelder wurden nicht gefunden.");
-    return;
+    return false;
   }
 
   const nameInput = nameElement.value.trim();
@@ -268,17 +288,26 @@ async function saveNewUserData(event) {
   const passwordConfirm = passwordConfirmElement.value.trim();
 
   if (!nameInput || !email || !password || !passwordConfirm) {
-    passOutline();
-    return;
+    if (inputRequired) {
+      inputRequired.textContent = "* Please fill in all fields";
+      inputRequired.classList.remove("d-none");
+    }
+
+    return false;
   }
 
   if (password !== passwordConfirm) {
     passOutline();
-    return;
+    return false;
   }
 
   if (!checkboxElement.checked) {
-    return;
+    if (inputRequired) {
+      inputRequired.textContent = "* Please accept the privacy policy";
+      inputRequired.classList.remove("d-none");
+    }
+
+    return false;
   }
 
   try {
@@ -293,13 +322,14 @@ async function saveNewUserData(event) {
       lastname: lastName,
       initials: initials,
       phone: "No data stored",
-      circleColor: getRandomColor(),
+      circleColor: getRandomUserColor(),
       createdAt: new Date().getTime(),
     });
 
     console.log("Benutzer erfolgreich registriert:", user.uid);
 
     showRegistrationAnimation();
+    return false;
   } catch (error) {
     console.error("Registrierungsfehler:", error);
 
@@ -311,16 +341,16 @@ async function saveNewUserData(event) {
       errorMessage = "* Password too weak";
     } else if (error.code === "auth/invalid-email") {
       errorMessage = "* Invalid email";
+    } else if (error.code === "auth/operation-not-allowed") {
+      errorMessage = "* Email/Password login is disabled in Firebase";
     }
-
-    const inputRequired = document.getElementById("inputRequired");
 
     if (inputRequired) {
       inputRequired.textContent = errorMessage;
       inputRequired.classList.remove("d-none");
     }
 
-    passOutline();
+    return false;
   }
 }
 
@@ -329,7 +359,7 @@ async function saveNewUserData(event) {
  * Guest Login mit Firebase Anonymous Authentication
  * @async
  * @param {Event} event
- * @returns {Promise<void>}
+ * @returns {Promise<boolean>}
  */
 async function logInAsGuest(event) {
   if (event) {
@@ -380,19 +410,67 @@ async function logInAsGuest(event) {
     }
 
     window.location.href = BASE_URL + "summary.html";
+    return false;
   } catch (error) {
     console.error("Guest Login Error:", error);
 
     if (error.code === "auth/operation-not-allowed") {
       alert("Guest Login fehlgeschlagen: Anonymous Login ist in Firebase Authentication nicht aktiviert.");
-      return;
+      return false;
     }
 
     if (error.code === "auth/admin-restricted-operation") {
       alert("Guest Login fehlgeschlagen: Anonymous Login ist in Firebase blockiert oder nicht aktiviert.");
-      return;
+      return false;
     }
 
     alert("Guest Login fehlgeschlagen: " + error.message);
+    return false;
+  }
+}
+
+
+/**
+ * Zufällige User-Farbe für Kontakte/Profil.
+ * Diese Funktion ist hier enthalten, damit index.html contacts.js nicht laden muss.
+ *
+ * @returns {string}
+ */
+function getRandomUserColor() {
+  let number = Math.floor(Math.random() * 15) + 1;
+
+  switch (number) {
+    case 1:
+      return "user-color-one";
+    case 2:
+      return "user-color-two";
+    case 3:
+      return "user-color-three";
+    case 4:
+      return "user-color-four";
+    case 5:
+      return "user-color-five";
+    case 6:
+      return "user-color-six";
+    case 7:
+      return "user-color-seven";
+    case 8:
+      return "user-color-eight";
+    case 9:
+      return "user-color-nine";
+    case 10:
+      return "user-color-ten";
+    case 11:
+      return "user-color-eleven";
+    case 12:
+      return "user-color-twelve";
+    case 13:
+      return "user-color-thirteen";
+    case 14:
+      return "user-color-fourteen";
+    case 15:
+      return "user-color-fifteen";
+    default:
+      return "user-color-one";
   }
 }
