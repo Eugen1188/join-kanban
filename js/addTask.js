@@ -95,83 +95,12 @@ async function prepareAddTaskLoggedInUser(user) {
 
 
 /**
- * Initializes the application by fetching logged-in user data, rendering the logged-in user,
- * setting priority to medium, loading assignment contacts, and retrieving all tasks data.
- *
- * @returns {Promise<void>}
- * @function init
+ * Entfernt alte/falsche Dropdown-Container, falls sie noch im DOM existieren.
+ * Diese Container wurden fälschlicherweise außerhalb des echten Assigned-to-Dropdowns erzeugt.
  */
-async function init() {
-  const user = await waitForAddTaskAuthState();
-
-  if (!user) {
-    navigateToIndex();
-    return;
-  }
-
-  await prepareAddTaskLoggedInUser(user);
-  await renderLogedUser();
-
-  invertSvgFills("medium");
-  handleClick("medium");
-
-  await loadRegisteredUsersForAssignment();
-  await getAllTasksData();
-
-  createTodayDateforDatepicker();
-}
-
-
-/**
- * Lädt alle registrierten User aus dem globalen Firebase-Pfad /contacts.
- * Diese Daten werden für die Assigned-to-Liste benutzt.
- *
- * @returns {Promise<void>}
- */
-async function loadRegisteredUsersForAssignment() {
-  try {
-    const snapshot = await database.ref("contacts").once("value");
-    const data = snapshot.val();
-
-    if (!data) {
-      contacts = [];
-      tempContacts = [];
-      contactIds = [];
-      console.warn("Keine registrierten Kontakte unter /contacts gefunden.");
-      renderAssignmentDropdownContacts();
-      return;
-    }
-
-    if (Array.isArray(data)) {
-      contacts = data.filter(Boolean);
-    } else {
-      contacts = Object.values(data);
-    }
-
-    contacts = contacts.filter(contact => contact && contact.id && !contact.isGuest);
-    tempContacts = contacts;
-    contactIds = contacts.map(contact => contact.id);
-
-    renderAssignmentDropdownContacts();
-  } catch (error) {
-    console.error("Fehler beim Laden der registrierten User für Assigned to:", error);
-    contacts = [];
-    tempContacts = [];
-    contactIds = [];
-    renderAssignmentDropdownContacts();
-  }
-}
-
-
-/**
- * Sucht den Container der Assigned-to-Liste möglichst robust.
- * Da ältere JOIN-Versionen unterschiedliche IDs nutzen können,
- * werden mehrere IDs geprüft.
- *
- * @returns {HTMLElement|null}
- */
-function getAssignmentDropdownContainer() {
-  const possibleIds = [
+function removeWrongGeneratedAssignmentDropdowns() {
+  const wrongIds = [
+    "generatedAssignedToDropdown",
     "assignedToDropdown",
     "assigned-to-dropdown",
     "contactsToAssign",
@@ -184,72 +113,53 @@ function getAssignmentDropdownContainer() {
     "contactDropDown",
     "contactDropdown",
     "contacts-dropdown",
-    "contactsDropdown"
+    "contactsDropdown",
   ];
 
-  for (let i = 0; i < possibleIds.length; i++) {
-    const element = document.getElementById(possibleIds[i]);
+  wrongIds.forEach((id) => {
+    const element = document.getElementById(id);
 
-    if (element) {
-      return element;
+    if (element && id !== "contact-values") {
+      element.remove();
     }
-  }
-
-  const choosenContacts = document.getElementById("choosenContacts");
-
-  if (choosenContacts && choosenContacts.parentElement) {
-    let createdDropdown = document.getElementById("generatedAssignedToDropdown");
-
-    if (!createdDropdown) {
-      createdDropdown = document.createElement("div");
-      createdDropdown.id = "generatedAssignedToDropdown";
-      createdDropdown.classList.add("assigned-to-generated-dropdown");
-      choosenContacts.parentElement.appendChild(createdDropdown);
-    }
-
-    return createdDropdown;
-  }
-
-  return null;
-}
-
-
-/**
- * Rendert die registrierten User in die Assigned-to-Liste.
- */
-function renderAssignmentDropdownContacts() {
-  const dropdown = getAssignmentDropdownContainer();
-
-  if (!dropdown) {
-    console.warn("Dropdown-Container für Assigned to wurde nicht gefunden. Bitte ID aus add-task.html prüfen.");
-    return;
-  }
-
-  dropdown.innerHTML = "";
-
-  if (!Array.isArray(contacts) || contacts.length === 0) {
-    dropdown.innerHTML = `<div class="contact-dropdown-empty">No registered users found</div>`;
-    return;
-  }
-
-  contacts.forEach((contact, index) => {
-    const fullName = `${contact.name || ""} ${contact.lastname || ""}`.trim();
-    const safeId = String(contact.id).replace(/'/g, "\\'");
-
-    dropdown.innerHTML += `
-      <div class="contact-dropdown-item pointer" onclick="getClickedContact(${index}, '${safeId}')">
-        <div class="userInitials ${contact.circleColor || "user-color-one"}">
-          ${contact.initials || ""}
-        </div>
-        <span>${fullName || contact.email || "Unnamed user"}</span>
-      </div>
-    `;
   });
 }
 
 
 /**
- * Asynchronously fetches the logged-in user's contacts and renders the logged-in user.
+ * Initializes the application by fetching logged-in user data, rendering the logged-in user,
+ * setting priority to medium for SVG fills, handling click events with medium priority,
+ * initializing contacts, and retrieving all tasks data.
+ *
+ * @returns {Promise<void>} A Promise that resolves when initialization is complete.
+ * @function init
+ * @author Christian Förster & Kevin Müller
+ */
+async function init() {
+  const user = await waitForAddTaskAuthState();
+
+  if (!user) {
+    navigateToIndex();
+    return;
+  }
+
+  removeWrongGeneratedAssignmentDropdowns();
+
+  await prepareAddTaskLoggedInUser(user);
+  await renderLogedUser();
+
+  invertSvgFills("medium");
+  handleClick("medium");
+
+  await initContacts();
+  await getAllTasksData();
+
+  createTodayDateforDatepicker();
+}
+
+
+/**
+ * Asynchronously fetches the logged-in user's data and renders the logged-in user.
  *
  * @function contacts
  * @returns {Promise<void>}
@@ -264,7 +174,7 @@ async function contacts() {
 
   await prepareAddTaskLoggedInUser(user);
   await renderLogedUser();
-  await loadRegisteredUsersForAssignment();
+  await initContacts();
 }
 
 
@@ -278,7 +188,8 @@ function validateForm(index) {
  * Handles click events and updates the priority button color based on the provided value.
  *
  * @function handleClick
- * @param {string} value
+ * @param {string} value - The value representing the priority.
+ * @author Christian Förster
  */
 function handleClick(value) {
   let priority = value;
@@ -290,8 +201,9 @@ function handleClick(value) {
  * Retrieves the color associated with the specified priority.
  *
  * @function getButtonColor
- * @param {string} priority
- * @returns {string}
+ * @param {string} priority - The priority value.
+ * @returns {string} The color associated with the specified priority.
+ * @author Christian Förster
  */
 function getButtonColor(priority) {
   if (priority === "low") {
@@ -310,7 +222,8 @@ function getButtonColor(priority) {
  * Inverts SVG fills based on the provided priority value.
  *
  * @function invertSvgFills
- * @param {string} value
+ * @param {string} value - The value representing the priority.
+ * @author Christian Förster
  */
 function invertSvgFills(value) {
   let priorityIcon = value;
@@ -337,6 +250,8 @@ function invertSvgFills(value) {
 
 /**
  * @function checkTitleInputField
+ * Checks the title input field and applies styling based on its value.
+ * @author Christian Förster
  */
 function checkTitleInputField() {
   let inputTitleField = document.getElementById("title");
@@ -360,6 +275,8 @@ function checkTitleInputField() {
 
 /**
  * @function checkSubtasknputField
+ * Checks the subtask input field and applies styling based on its value.
+ * @author Christian Förster
  */
 function checkSubtasknputField() {
   let inputSubtaskField = document.getElementById("subtask");
@@ -383,6 +300,8 @@ function checkSubtasknputField() {
 
 /**
  * @function removeEmptyEditSubtaskInputNotice
+ * @author Christian Förster
+ * Removes the visual notice indicating that input is required for editing a subtask.
  */
 function removeEmptyEditSubtaskInputNotice() {
   let subtaskInput = document.getElementById("subtask");
@@ -400,6 +319,8 @@ function removeEmptyEditSubtaskInputNotice() {
 
 /**
  * @function updateDateFieldValue
+ * Updates the value of the date field to a different format and checks its validity.
+ * @author Christian Förster
  */
 function updateDateFieldValue() {
   let dateNormal = document.getElementById("dateNormal");
@@ -419,6 +340,8 @@ function updateDateFieldValue() {
 
 /**
  * @function checkDateInputField
+ * Checks the date input field and applies styling based on its value.
+ * @author Christian Förster
  */
 function checkDateInputField() {
   formatDateInput();
@@ -443,9 +366,10 @@ function checkDateInputField() {
 
 
 /**
- * Formats the date input field value.
+ * Formats the date input field value by removing non-numeric characters and inserting slashes.
  *
  * @function formatDateInput
+ * @author Christian Förster
  */
 function formatDateInput() {
   let input = document.getElementById("date");
@@ -469,7 +393,10 @@ function formatDateInput() {
 
 
 /**
+ * Retrieves the values of required form inputs and sets the state and style of the submit button accordingly.
+ *
  * @function getRequiredFormInputs
+ * @author Christian Förster
  */
 function getRequiredFormInputs() {
   let title = document.getElementById("title");
@@ -490,7 +417,14 @@ function getRequiredFormInputs() {
 
 
 /**
+ * Sets the state and style of the submit button based on the provided values of required form inputs.
+ *
  * @function setSubmitButtonStateAndStyle
+ * @param {string} titleValue
+ * @param {string} inputDateFieldValue
+ * @param {string} categoryValue
+ * @param {HTMLElement} submitButton
+ * @author Christian Förster
  */
 function setSubmitButtonStateAndStyle(titleValue, inputDateFieldValue, categoryValue, submitButton) {
   if (!submitButton) {
@@ -511,6 +445,7 @@ function setSubmitButtonStateAndStyle(titleValue, inputDateFieldValue, categoryV
  * Clears field inputs and resets form state.
  *
  * @function clearFieldInputs
+ * @author Christian Förster
  */
 function clearFieldInputs() {
   let form = document.getElementById("form");
@@ -554,10 +489,11 @@ function clearFieldInputs() {
 
 
 /**
- * Prevents the default form submission behavior when Enter is pressed.
+ * Prevents the default form submission behavior when the Enter key is pressed.
  *
  * @function preventFormSubmit
  * @param {KeyboardEvent} event
+ * @author Christian Förster
  */
 function preventFormSubmit(event) {
   if (event.key === "Enter") {
@@ -567,9 +503,10 @@ function preventFormSubmit(event) {
 
 
 /**
- * Clears the current task state.
+ * Clears the current task state by resetting it to its initial values.
  *
  * @function clearCurrentTask
+ * @author Kevin Müller
  */
 function clearCurrentTask() {
   currentTaskState = { inProgress: false, awaitFeedback: false, done: false };
@@ -577,9 +514,9 @@ function clearCurrentTask() {
 
 
 /**
- * Creates today's date for a datepicker input field.
- *
  * @function createTodayDateforDatepicker
+ * @author Christian Förster
+ * Creates today's date for a datepicker input field.
  */
 function createTodayDateforDatepicker() {
   let datePickerInput = document.getElementById("dateNormal");
