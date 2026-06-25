@@ -1,62 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Join</title>
-    <link rel="icon" type="image/x-icon" href="./assets/img/join_logo.png">
+
+    <link rel="icon" type="image/x-icon" href="./assets/img/join_logo.png" />
     <link rel="stylesheet" href="./styles/font.css" />
     <link rel="stylesheet" href="./assets/templates/header.style.css" />
-    <link rel="stylesheet" href="./assets/templates/header.style-responsive.css">
+    <link rel="stylesheet" href="./assets/templates/header.style-responsive.css" />
     <link rel="stylesheet" href="./styles/style.css" />
-    <link rel="stylesheet" href="./styles/contacts.css"/>
-    <link rel="stylesheet" href="./styles/contacts-card.css">
-    <link rel="stylesheet" href="./styles/contacts-responsive.css">
-    <link rel="stylesheet" href="./styles/contacts-mobile.css">
+    <link rel="stylesheet" href="./styles/contacts.css" />
+    <link rel="stylesheet" href="./styles/contacts-card.css" />
+    <link rel="stylesheet" href="./styles/contacts-responsive.css" />
+    <link rel="stylesheet" href="./styles/contacts-mobile.css" />
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <!-- Project Scripts: Reihenfolge ist wichtig -->
     <script src="./firebase-config.js"></script>
-    <script src="./script.js" defer></script>
+    <script src="./script.js"></script>
     <script src="./js/contactsHtmlTemplate.js"></script>
     <script src="./js/contactsRender.js"></script>
-    <script src="./js/contacts.js" defer></script>
-</head>
+    <script src="./js/contacts.js"></script>
+  </head>
 
-<body onload="includeHTML(); initContacts()">
+  <body onload="includeHTML(); initContacts();">
     <header id="main-header" w3-include-html="assets/templates/header.html"></header>
+
     <div id="opasity"></div>
+
     <div class="contacts-container" id="contacts-container">
-        <div class="contacts-conllection">
-            <div class="contacts-btn-bg">
-                <div id="mobile-single-contacts"></div>
-                <div class="btn-container" id="btn-container">
-                    <button class="add-contacts-btn add-contact-btn-mobile main-btn-color pointer"
-                        onclick="addBtnMobileOrDesktop()" id="add-or-eddit">
-                        <span class="dnone">Add new Contact</span>
-                        <img src="./assets/img/icons/person_add.png" />
-                    </button>
-                </div>
-            </div>
-            <div class="contacts-content" id="contact-list">
-            </div>
+      <div class="contacts-conllection">
+        <div class="contacts-btn-bg">
+          <div id="mobile-single-contacts"></div>
+
+          <div class="btn-container" id="btn-container">
+            <button class="add-contacts-btn add-contact-btn-mobile main-btn-color pointer" onclick="addBtnMobileOrDesktop()" id="add-or-eddit">
+              <span class="dnone">Add new Contact</span>
+              <img src="./assets/img/icons/person_add.png" />
+            </button>
+          </div>
         </div>
+
+        <div class="contacts-content" id="contact-list"></div>
+      </div>
     </div>
-    <div class="single-content-container ">
-        <div class="single-contact-headline dnone" id="single-contact-headline">
-            <h1>Contacts</h1>
-            <div class="vertical-bar"></div>
-            <span class="">Better with a Team</span>
-            <div class="small-underline desktop-none"></div>
-        </div>
-        <div class="single-contact-data-container" id="single-contact-data-container">
-        </div>
+
+    <div class="single-content-container">
+      <div class="single-contact-headline dnone" id="single-contact-headline">
+        <h1>Contacts</h1>
+        <div class="vertical-bar"></div>
+        <span>Better with a Team</span>
+        <div class="small-underline desktop-none"></div>
+      </div>
+
+      <div class="single-contact-data-container" id="single-contact-data-container"></div>
     </div>
+
     <div id="edit-card"></div>
     <div id="contact-success"></div>
-
-</body>
-
+  </body>
 </html>

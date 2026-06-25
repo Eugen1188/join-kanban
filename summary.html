@@ -1,201 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Join</title>
-    <link rel="icon" type="image/x-icon" href="./assets/img/join_logo.png">
-    <link rel="stylesheet" href="./styles/font.css">
+
+    <link rel="icon" type="image/x-icon" href="./assets/img/join_logo.png" />
+    <link rel="stylesheet" href="./styles/font.css" />
+    <link rel="stylesheet" href="./assets/templates/header.style.css" />
+    <link rel="stylesheet" href="./assets/templates/header.style-responsive.css" />
+    <link rel="stylesheet" href="./styles/summary.css" />
+    <link rel="stylesheet" href="./styles/summary-responsive.css" />
+    <link rel="stylesheet" href="./styles/style.css" />
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <!-- Project Scripts: Reihenfolge ist wichtig -->
     <script src="./firebase-config.js"></script>
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
     <script src="./js/summary.js"></script>
-    <script src="./js/addTask.js"></script>
-    <script src="./js/board.js"></script>
-    <script src="./js/register_login.js"></script>
-    <link rel="stylesheet" href="./assets/templates/header.style.css">
-    <link rel="stylesheet" href="./assets/templates/header.style-responsive.css">
-    <link rel="stylesheet" href="./styles/summary.css">
-    <link rel="stylesheet" href="./styles/summary-responsive.css">
-    <link rel="stylesheet" href="./styles/style.css">
+  </head>
 
-</head>
-
-<body onload="includeHTML(), renderSummeryTasks(), initRegisteredContacts(), GreetingDependTime()">
-
+  <body onload="includeHTML(); renderSummeryTasks();">
     <header id="main-header" w3-include-html="./assets/templates/header.html"></header>
 
-
     <div class="main-sum-cont">
+      <div class="join360-cont">
+        <h1>Join 360</h1>
+        <div class="blue-line"></div>
+        <p>Key Metrics at a Glance</p>
+      </div>
 
-        <div class="join360-cont">
-            <h1>
-                Join 360
-            </h1>
+      <div class="tasks-overall-cont">
+        <div class="summary-cont">
+          <div class="tasks-main-cont">
+            <div class="todo-done-cont">
+              <a href="board.html">
+                <div class="task1-cont">
+                  <svg width="69" height="70" viewBox="0 0 69 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="pencil-circle-white" cx="34.5" cy="35" r="34.5" fill="#2A3647" />
+                    <mask id="mask0_126747_6084" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="18" y="19" width="33" height="32">
+                      <rect x="18.5" y="19" width="32" height="32" fill="#D9D9D9" />
+                    </mask>
+                    <g mask="url(#mask0_126747_6084)">
+                      <path
+                        class="pencil-hover"
+                        d="M25.1667 44.3332H27.0333L38.5333 32.8332L36.6667 30.9665L25.1667 42.4665V44.3332ZM44.2333 30.8998L38.5667 25.2998L40.4333 23.4332C40.9444 22.9221 41.5722 22.6665 42.3167 22.6665C43.0611 22.6665 43.6889 22.9221 44.2 23.4332L46.0667 25.2998C46.5778 25.8109 46.8444 26.4276 46.8667 27.1498C46.8889 27.8721 46.6444 28.4887 46.1333 28.9998L44.2333 30.8998ZM42.3 32.8665L28.1667 46.9998H22.5V41.3332L36.6333 27.1998L42.3 32.8665Z"
+                        fill="white"
+                      />
+                    </g>
+                  </svg>
 
-            <div class="blue-line"></div>
-            <p>Key Metrics at a Glance</p>
-
-        </div>
-
-        <div class="tasks-overall-cont">
-
-            <div class="summary-cont">
-
-                <div class="tasks-main-cont">
-                    <div class="todo-done-cont">
-                        <a href="board.html">
-                            <div class="task1-cont"><svg width="69" height="70" viewBox="0 0 69 70" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <circle class="pencil-circle-white" cx="34.5" cy="35" r="34.5" fill="#2A3647" />
-                                    <mask id="mask0_126747_6084" style="mask-type:alpha" maskUnits="userSpaceOnUse"
-                                        x="18" y="19" width="33" height="32">
-                                        <rect x="18.5" y="19" width="32" height="32" fill="#D9D9D9" />
-                                    </mask>
-                                    <g mask="url(#mask0_126747_6084)">
-                                        <path class="pencil-hover"
-                                            d="M25.1667 44.3332H27.0333L38.5333 32.8332L36.6667 30.9665L25.1667 42.4665V44.3332ZM44.2333 30.8998L38.5667 25.2998L40.4333 23.4332C40.9444 22.9221 41.5722 22.6665 42.3167 22.6665C43.0611 22.6665 43.6889 22.9221 44.2 23.4332L46.0667 25.2998C46.5778 25.8109 46.8444 26.4276 46.8667 27.1498C46.8889 27.8721 46.6444 28.4887 46.1333 28.9998L44.2333 30.8998ZM42.3 32.8665L28.1667 46.9998H22.5V41.3332L36.6333 27.1998L42.3 32.8665Z"
-                                            fill="white" />
-                                    </g>
-                                </svg>
-                                <div class="task-number"><span id="tasks_number_to_do">1</span>
-                                    <div>To-do</div>
-                                </div>
-                            </div>
-                        </a>
-
-
-                        <a href="board.html">
-                            <div class="task2-cont">
-                                <svg width="70" height="70" viewBox="0 0 70 70" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <circle class="circle-task2" cx="35" cy="35" r="34.5" fill="#2A3647" />
-                                    <path class="hook-task2" d="M20.0283 35.0001L31.2571 46.0662L49.9717 23.9341"
-                                        stroke="white" stroke-width="7" stroke-linecap="round"
-                                        stroke-linejoin="round" />
-                                </svg>
-                                <div class="task-number"><span id="tasks_number_done">1</span>
-                                    <div>Done</div>
-                                </div>
-
-                            </div>
-                        </a>
-
-                    </div>
-
-
-                    <div class="deadline-help-hover-cont">
-                        <a href="board.html">
-                            <div class="deadline-cont">
-
-                                <div class="urgent-count">
-                                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                        <circle cx="30" cy="30" r="30" fill="#FF3D00" />
-                                        <g clip-path="url(#clip0_126747_5748)">
-                                            <path
-                                                d="M44.8709 41.1626C44.4699 41.1633 44.0792 41.0337 43.7563 40.7929L29.6511 30.263L15.5458 40.7929C15.3478 40.941 15.1229 41.0482 14.8839 41.1084C14.645 41.1685 14.3966 41.1805 14.1531 41.1435C13.9096 41.1066 13.6757 41.0214 13.4647 40.893C13.2536 40.7645 13.0697 40.5953 12.9233 40.3949C12.777 40.1945 12.6711 39.9669 12.6116 39.7251C12.5522 39.4832 12.5404 39.2319 12.5769 38.9855C12.6507 38.4878 12.9168 38.0402 13.3167 37.7411L28.5365 26.3677C28.8591 26.126 29.2498 25.9956 29.6511 25.9956C30.0524 25.9956 30.4431 26.126 30.7657 26.3677L45.9855 37.7411C46.3033 37.9781 46.5389 38.3106 46.6588 38.6912C46.7788 39.0718 46.7768 39.481 46.6532 39.8604C46.5296 40.2398 46.2907 40.57 45.9706 40.8039C45.6506 41.0377 45.2657 41.1633 44.8709 41.1626Z"
-                                                fill="white" />
-                                            <path
-                                                d="M44.8708 31.2109C44.4697 31.2116 44.0791 31.082 43.7562 30.8413L29.651 20.3114L15.5457 30.8413C15.1458 31.1404 14.6448 31.2665 14.153 31.1919C13.6612 31.1172 13.2188 30.8479 12.9232 30.4432C12.6276 30.0385 12.503 29.5315 12.5768 29.0339C12.6506 28.5362 12.9167 28.0885 13.3166 27.7894L28.5364 16.416C28.859 16.1744 29.2497 16.0439 29.651 16.0439C30.0523 16.0439 30.443 16.1744 30.7655 16.416L45.9854 27.7894C46.3031 28.0264 46.5388 28.359 46.6587 28.7396C46.7786 29.1202 46.7767 29.5294 46.6531 29.9088C46.5295 30.2882 46.2906 30.6184 45.9705 30.8522C45.6505 31.0861 45.2656 31.2116 44.8708 31.2109Z"
-                                                fill="white" />
-                                        </g>
-                                        <defs>
-                                            <clipPath id="clip0_126747_5748">
-                                                <rect width="34.186" height="25.1163" fill="white"
-                                                    transform="translate(12.5581 16.0464)" />
-                                            </clipPath>
-                                        </defs>
-                                    </svg>
-                                    <div class="count-cont">
-                                        <span class="urgent-count" id="tasks_number_urgent">1</span>
-                                        <span class="urgent">Urgent</span>
-                                    </div>
-
-
-                                </div>
-
-                                <div class="grey-line"></div>
-
-                                <div class="deadline-date-cont">
-                                    <span class="date" id="next_urgent_task_date">October 16, 2022</span>
-                                    <span class="upcom-deadline">Upcoming Deadline</span>
-                                </div>
-
-
-                            </div>
-                        </a>
-
-                    </div>
-
-
-
-                    <div class="tasks-overview-cont">
-
-
-                        <div class="tasks-in-board-help-hover-cont">
-                            <a href="board.html">
-                                <div class="tasks-in-board-cont">
-                                    <span class="tasks-amount-board" id="amount_of_tasks_in_board">5</span>
-                                    <span class="tasks-in-board-span">Tasks in <br> Board</span>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="tasks-in-board-help-hover-cont flex-center">
-                            <a href="board.html">
-                                <div class="tasks-in-board-cont">
-                                    <span class="tasks-amount-board" id="tasks_in_progress">2</span>
-                                    <span class="tasks-in-board-span">Tasks in <br> Progress</span>
-                                </div>
-                            </a>
-                        </div>
-
-                        <div class="tasks-in-board-help-hover-cont flex-end">
-                            <a href="board.html">
-                                <div class="tasks-in-board-cont">
-                                    <span class="tasks-amount-board" id="tasks_awaiting_feedback">2</span>
-                                    <span class="tasks-in-board-span">Awaiting Feedback</span>
-                                </div>
-                            </a>
-                        </div>
-
-
-                    </div>
-
-
+                  <div class="task-number">
+                    <span id="tasks_number_to_do">0</span>
+                    <div>To-do</div>
+                  </div>
                 </div>
+              </a>
 
-                <div class="greetings-main-cont">
+              <a href="board.html">
+                <div class="task2-cont">
+                  <svg width="70" height="70" viewBox="0 0 70 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="circle-task2" cx="35" cy="35" r="34.5" fill="#2A3647" />
+                    <path class="hook-task2" d="M20.0283 35.0001L31.2571 46.0662L49.9717 23.9341" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
 
-                    <span class="goodmorning-span" id="greeting-depent-time">Good morning,</span>
-                    <div class="fullname">
-                        <span class="usernamespan" id="logedInName"></span> <span class="usernamespan"
-                            id="logedInLastname"></span>
-                    </div>
-
-
-
+                  <div class="task-number">
+                    <span id="tasks_number_done">0</span>
+                    <div>Done</div>
+                  </div>
                 </div>
-
+              </a>
             </div>
 
+            <div class="deadline-help-hover-cont">
+              <a href="board.html">
+                <div class="deadline-cont">
+                  <div class="urgent-count">
+                    <svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="30" cy="30" r="30" fill="#FF3D00" />
+                      <g clip-path="url(#clip0_126747_5748)">
+                        <path
+                          d="M44.8709 41.1626C44.4699 41.1633 44.0792 41.0337 43.7563 40.7929L29.6511 30.263L15.5458 40.7929C15.3478 40.941 15.1229 41.0482 14.8839 41.1084C14.645 41.1685 14.3966 41.1805 14.1531 41.1435C13.9096 41.1066 13.6757 41.0214 13.4647 40.893C13.2536 40.7645 13.0697 40.5953 12.9233 40.3949C12.777 40.1945 12.6711 39.9669 12.5769 38.9855C12.6507 38.4878 12.9168 38.0402 13.3167 37.7411L28.5365 26.3677C28.8591 26.126 29.2498 25.9956 29.6511 25.9956C30.0524 25.9956 30.4431 26.126 30.7657 26.3677L45.9855 37.7411C46.3033 37.9781 46.5389 38.3106 46.6588 38.6912C46.7788 39.0718 46.7768 39.481 46.6532 39.8604C46.5296 40.2398 46.2907 40.57 45.9706 40.8039C45.6506 41.0377 45.2657 41.1633 44.8709 41.1626Z"
+                          fill="white"
+                        />
+                        <path
+                          d="M44.8708 31.2109C44.4697 31.2116 44.0791 31.082 43.7562 30.8413L29.651 20.3114L15.5457 30.8413C15.1458 31.1404 14.6448 31.2665 14.153 31.1919C13.6612 31.1172 13.2188 30.8479 12.9232 30.4432C12.6276 30.0385 12.503 29.5315 12.5768 29.0339C12.6506 28.5362 12.9167 28.0885 13.3166 27.7894L28.5364 16.416C28.859 16.1744 29.2497 16.0439 29.651 16.0439C30.0523 16.0439 30.443 16.1744 30.7655 16.416L45.9854 27.7894C46.3031 28.0264 46.5388 28.359 46.6587 28.7396C46.7786 29.1202 46.7767 29.5294 46.6531 29.9088C46.5295 30.2882 46.2906 30.6184 45.9705 30.8522C45.6505 31.0861 45.2656 31.2116 44.8708 31.2109Z"
+                          fill="white"
+                        />
+                      </g>
+                      <defs>
+                        <clipPath id="clip0_126747_5748">
+                          <rect width="34.186" height="25.1163" fill="white" transform="translate(12.5581 16.0464)" />
+                        </clipPath>
+                      </defs>
+                    </svg>
 
+                    <div class="count-cont">
+                      <span class="urgent-count" id="tasks_number_urgent">0</span>
+                      <span class="urgent">Urgent</span>
+                    </div>
+                  </div>
+
+                  <div class="grey-line"></div>
+
+                  <div class="deadline-date-cont">
+                    <span class="date" id="next_urgent_task_date">No urgent dates !</span>
+                    <span class="upcom-deadline">Upcoming Deadline</span>
+                  </div>
+                </div>
+              </a>
+            </div>
+
+            <div class="tasks-overview-cont">
+              <div class="tasks-in-board-help-hover-cont">
+                <a href="board.html">
+                  <div class="tasks-in-board-cont">
+                    <span class="tasks-amount-board" id="amount_of_tasks_in_board">0</span>
+                    <span class="tasks-in-board-span">Tasks in <br /> Board</span>
+                  </div>
+                </a>
+              </div>
+
+              <div class="tasks-in-board-help-hover-cont flex-center">
+                <a href="board.html">
+                  <div class="tasks-in-board-cont">
+                    <span class="tasks-amount-board" id="tasks_in_progress">0</span>
+                    <span class="tasks-in-board-span">Tasks in <br /> Progress</span>
+                  </div>
+                </a>
+              </div>
+
+              <div class="tasks-in-board-help-hover-cont flex-end">
+                <a href="board.html">
+                  <div class="tasks-in-board-cont">
+                    <span class="tasks-amount-board" id="tasks_awaiting_feedback">0</span>
+                    <span class="tasks-in-board-span">Awaiting Feedback</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="greetings-main-cont">
+            <span class="goodmorning-span" id="greeting-depent-time">Good morning</span>
+            <div class="fullname">
+              <span class="usernamespan" id="logedInName"></span>
+              <span class="usernamespan" id="logedInLastname"></span>
+            </div>
+          </div>
         </div>
-
-
-
+      </div>
     </div>
 
     <div class="greeting-main-cont-responsive" id="greeting-main-cont-responsive">
-
-        <span class="greeting-text-responsive" id="greetings-resposive-user"></span>
+      <span class="greeting-text-responsive" id="greetings-resposive-user"></span>
     </div>
-
-</body>
-
+  </body>
 </html>
